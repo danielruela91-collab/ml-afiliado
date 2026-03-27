@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fetch the current Growth Creatina 250g price from Mercado Livre
+Fetch the current price of the exact ML listing (MLB1584301524)
 and update all price occurrences in index.html.
 """
 import json
@@ -8,37 +8,26 @@ import re
 import sys
 import urllib.request
 
-SEARCH_URL = (
-    "https://api.mercadolibre.com/sites/MLB/search"
-    "?q=creatina+growth+monohidratada+250g&limit=10"
-)
+ITEM_ID = "MLB1584301524"
+ITEM_URL = f"https://api.mercadolibre.com/items/{ITEM_ID}"
 # Reference (store) price used to calculate discount %
 STORE_PRICE = 62
 HTML_FILE = "index.html"
 
 
 def fetch_ml_price() -> int:
-    req = urllib.request.Request(SEARCH_URL, headers={"User-Agent": "price-sync-bot/1.0"})
+    req = urllib.request.Request(ITEM_URL, headers={"User-Agent": "price-sync-bot/1.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read())
 
-    results = data.get("results", [])
-    if not results:
-        print("ERROR: no results from ML API", file=sys.stderr)
+    price = data.get("price")
+    if price is None:
+        print("ERROR: no price in ML API response", file=sys.stderr)
+        print(json.dumps(data, indent=2), file=sys.stderr)
         sys.exit(1)
 
-    # Prefer results whose title contains "growth" and "250"
-    for item in results:
-        title = item.get("title", "").lower()
-        if "growth" in title and "250" in title:
-            price = int(item["price"])
-            print(f"Matched: {item['title']} → R$ {price}")
-            return price
-
-    # Fallback: first result
-    price = int(results[0]["price"])
-    print(f"Fallback: {results[0]['title']} → R$ {price}")
-    return price
+    print(f"Fetched: {data.get('title')} → R$ {price}")
+    return int(price)
 
 
 def update_html(price: int) -> bool:
@@ -83,20 +72,11 @@ def update_html(price: int) -> bool:
         html,
     )
 
-    # 6. Recalculate competitor % differences in compare-status
-    competitor_prices = {62: None, 54: None, 67: None, 59: None}
-    def recalc_status(m):
-        raw = m.group(0)
-        # extract the compare-price from the same row isn't possible with a single
-        # regex pass; instead rebuild the known competitor rows
-        return raw
-
-    # Simpler: replace each known "+XX% mais caro" with recalculated value
+    # 6. Recalculate competitor % differences
     known_competitors = [62, 54, 67, 59]
     for comp in known_competitors:
         if comp > price:
             pct = round((comp / price - 1) * 100)
-            # Replace the status for this competitor
             html = re.sub(
                 r'(<div class="compare-status status-high">\+)\d+(%)',
                 rf'\g<1>{pct}\2',
