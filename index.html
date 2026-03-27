@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas do Dia — Descontos Reais em Suplementos</title>
+    <meta name="description" content="Encontre os melhores preços em suplementos. Whey Protein, Creatina e mais com descontos reais verificados diariamente.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-hover: #1c1c1c;
+            --border: #2a2a2a;
+            --text: #e8e8e8;
+            --text-muted: #888;
+            --accent: #ffe234;
+            --accent-dim: #ffe23422;
+            --green: #22c55e;
+            --red: #ef4444;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* HERO */
+        .hero {
+            position: relative;
+            padding: 60px 20px 40px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse, var(--accent-dim) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 20px;
+            animation: fadeInDown .6s ease;
+        }
+
+        .badge .dot {
+            width: 6px; height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+
+        .hero h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(28px, 5vw, 48px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            animation: fadeInDown .6s ease .1s both;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 460px;
+            margin: 0 auto;
+            animation: fadeInDown .6s ease .2s both;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PRODUCTS GRID */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 16px 80px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+
+        .product-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            transition: all .2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            animation: fadeInUp .5s ease both;
+        }
+
+        .product-card:hover {
+            background: var(--surface-hover);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255,226,52,.06);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .product-card:nth-child(2) { animation-delay: .08s; }
+        .product-card:nth-child(3) { animation-delay: .16s; }
+        .product-card:nth-child(4) { animation-delay: .24s; }
+
+        .product-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: #1e1e1e;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            overflow: hidden;
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-name {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .product-brand {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-current {
+            font-family: 'Space Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .price-old {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: var(--green);
+            color: #000;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .cta-arrow {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s ease;
+        }
+
+        .product-card:hover .cta-arrow {
+            background: var(--accent);
+        }
+
+        .cta-arrow svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--accent);
+            transition: stroke .2s ease;
+        }
+
+        .product-card:hover .cta-arrow svg {
+            stroke: #000;
+        }
+
+        /* DISCLAIMER */
+        .disclaimer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+            border-top: 1px solid var(--border);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 480px) {
+            .product-card { padding: 14px; gap: 12px; }
+            .product-img { width: 64px; height: 64px; }
+            .product-name { font-size: 14px; }
+            .price-current { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="badge">
+        <span class="dot"></span>
+        Atualizado hoje
+    </div>
+    <h1>Ofertas <span>verificadas</span><br>em suplementos</h1>
+    <p>Preços comparados diariamente. Só publico quando o desconto é real.</p>
+</div>
+
+<div class="container">
+    <div class="section-label">Destaques de hoje</div>
+
+    <!-- PRODUTO 1 -->
+    <a class="product-card" href="https://lista.mercadolivre.com.br/suplementos-whey-protein-desconto" target="_blank" rel="noopener">
+        <div class="product-img">🥛</div>
+        <div class="product-info">
+            <div class="product-name">Whey Protein Concentrado 900g</div>
+            <div class="product-brand">Dux Nutrition</div>
+            <div class="price-row">
+                <span class="price-current">R$ 157</span>
+                <span class="price-old">R$ 199</span>
+                <span class="discount-badge">-21%</span>
+            </div>
+        </div>
+        <div class="cta-arrow">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </div>
+    </a>
+
+    <!-- PRODUTO 2 -->
+    <a class="product-card" href="https://lista.mercadolivre.com.br/suplementos-creatina-desconto" target="_blank" rel="noopener">
+        <div class="product-img">💪</div>
+        <div class="product-info">
+            <div class="product-name">Creatina Monohidratada 300g</div>
+            <div class="product-brand">Integral Médica</div>
+            <div class="price-row">
+                <span class="price-current">R$ 69</span>
+                <span class="price-old">R$ 99</span>
+                <span class="discount-badge">-30%</span>
+            </div>
+        </div>
+        <div class="cta-arrow">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </div>
+    </a>
+
+    <!-- PRODUTO 3 -->
+    <a class="product-card" href="https://lista.mercadolivre.com.br/suplementos-glutamina-desconto" target="_blank" rel="noopener">
+        <div class="product-img">⚡</div>
+        <div class="product-info">
+            <div class="product-name">Glutamina Pura 300g</div>
+            <div class="product-brand">Max Titanium</div>
+            <div class="price-row">
+                <span class="price-current">R$ 54</span>
+                <span class="price-old">R$ 79</span>
+                <span class="discount-badge">-32%</span>
+            </div>
+        </div>
+        <div class="cta-arrow">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </div>
+    </a>
+
+</div>
+
+<div class="disclaimer">
+    Este site contém links de afiliado. Ao comprar através dos links acima,
+    posso receber uma comissão sem custo adicional para você.
+    Preços sujeitos a alteração sem aviso prévio.
+</div>
+
+</body>
+</html>
