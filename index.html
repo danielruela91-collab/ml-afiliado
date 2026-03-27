@@ -77,6 +77,19 @@
             margin-bottom: 18px;
             letter-spacing: .5px;
             text-transform: uppercase;
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 360px) {
+            .hero-badge {
+                font-size: 10px;
+                padding: 4px 9px;
+                letter-spacing: 0;
+                gap: 5px;
+            }
         }
 
         .hero-badge .dot {
@@ -464,7 +477,7 @@
     <div class="hero-text fade-in">
         <div class="hero-badge">
             <span class="dot"></span>
-            Verificado hoje — 27 Mar 2026
+            Verificado hoje — <span id="hero-date">27 Mar 2026</span>
         </div>
         <h1>Creatina Growth<br><em>Monohidratada</em><br>250g</h1>
         <p class="hero-sub">Nova Fórmula · Sem sabor · 83 doses de 3g<br>Comprei na loja oficial por R$62. Achei <strong>R$39 no ML</strong>.</p>
@@ -498,7 +511,7 @@
 <!-- COMPARE SECTION -->
 <section class="compare-section fade-in delay-1">
     <div class="section-title">Comparação de preços</div>
-    <div class="section-sub">Mesmo produto · Creatina Growth Monohidratada 250g · Consultado em 27/03/2026</div>
+    <div class="section-sub">Mesmo produto · Creatina Growth Monohidratada 250g · Consultado em <span id="compare-date">27/03/2026</span></div>
 
     <div class="compare-table">
         <!-- header -->
@@ -614,9 +627,31 @@
 <div class="disclaimer">
     Este site contém links de afiliado do programa de afiliados do Mercado Livre.<br>
     Ao comprar pelo link acima, posso receber uma comissão sem custo adicional para você.<br>
-    Preços conferidos em 27/03/2026 e sujeitos a alteração sem aviso prévio.<br>
+    Preços conferidos em <span id="disclaimer-date">27/03/2026</span> e sujeitos a alteração sem aviso prévio.<br>
     Os preços de outras lojas são estimativas de mercado para fins comparativos.
 </div>
+
+<script>
+(function () {
+    var now = new Date();
+    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var day = now.getDate();
+    var month = months[now.getMonth()];
+    var year = now.getFullYear();
+    var dd = String(day).padStart(2, '0');
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+
+    var heroDate = document.getElementById('hero-date');
+    if (heroDate) heroDate.textContent = day + ' ' + month + ' ' + year;
+
+    var shortDate = dd + '/' + mm + '/' + year;
+    var compareDate = document.getElementById('compare-date');
+    if (compareDate) compareDate.textContent = shortDate;
+
+    var disclaimerDate = document.getElementById('disclaimer-date');
+    if (disclaimerDate) disclaimerDate.textContent = shortDate;
+})();
+</script>
 
 </body>
 </html>
