@@ -8,25 +8,27 @@ import re
 import sys
 import urllib.request
 
-ITEM_ID = "MLB1584301524"
-ITEM_URL = f"https://api.mercadolibre.com/items/{ITEM_ID}"
+PRODUCT_ID = "MLBUY0QGQ841V"
+PRODUCT_URL = f"https://api.mercadolibre.com/products/{PRODUCT_ID}"
 # Reference (store) price used to calculate discount %
 STORE_PRICE = 62
 HTML_FILE = "index.html"
 
 
 def fetch_ml_price() -> int:
-    req = urllib.request.Request(ITEM_URL, headers={"User-Agent": "price-sync-bot/1.0"})
+    req = urllib.request.Request(PRODUCT_URL, headers={"User-Agent": "price-sync-bot/1.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read())
 
-    price = data.get("price")
+    # Catalog product returns buy_box_winner with the current price
+    buy_box = data.get("buy_box_winner", {})
+    price = buy_box.get("price") or data.get("price")
     if price is None:
         print("ERROR: no price in ML API response", file=sys.stderr)
         print(json.dumps(data, indent=2), file=sys.stderr)
         sys.exit(1)
 
-    print(f"Fetched: {data.get('title')} → R$ {price}")
+    print(f"Fetched: {data.get('name', PRODUCT_ID)} → R$ {price}")
     return int(price)
 
 
