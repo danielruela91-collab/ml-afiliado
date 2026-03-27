@@ -1,0 +1,38 @@
+name: Sync ML Price
+
+on:
+  schedule:
+    # 3 AM BRT = 6 AM UTC every day
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch price and update page
+        id: sync
+        run: |
+          python scripts/sync_price.py
+          echo "exit=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Commit and push if changed
+        if: steps.sync.outcome == 'success'
+        run: |
+          git config user.name "price-bot"
+          git config user.email "noreply@github.com"
+          git add index.html
+          git diff --cached --quiet && echo "Nothing to commit" || \
+            (git commit -m "chore: sync ML price $(date +'%Y-%m-%d')" && git push)
