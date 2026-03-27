@@ -49,12 +49,12 @@
             --surface: #0f0f12;
             --surface2: #18181e;
             --border: #252530;
-            --border-glow: #4ade8044;
+            --border-glow: #FFE60044;
             --text: #f0f0f5;
             --muted: #6b6b7a;
-            --accent: #4ade80;
-            --accent-dim: #4ade8015;
-            --accent-glow: #4ade8030;
+            --accent: #FFE600;
+            --accent-dim: #FFE60015;
+            --accent-glow: #FFE60030;
             --yellow: #fbbf24;
             --red: #f87171;
             --radius: 14px;
@@ -94,7 +94,7 @@
 
         @media (max-width: 640px) {
             .hero { grid-template-columns: 1fr; padding: 32px 16px 0; }
-            .hero-img { order: -1; max-width: 280px; margin: 0 auto; }
+            .hero-img { order: -1; max-width: 200px; margin: 0 auto; }
         }
 
         .hero-text {}
@@ -229,7 +229,7 @@
         }
 
         .btn-cta:hover {
-            background: #6ee7a0;
+            background: #ffd000;
             transform: translateY(-2px);
             box-shadow: 0 4px 32px var(--accent-glow);
         }
@@ -260,12 +260,12 @@
 
         .hero-img img {
             width: 100%;
-            max-width: 320px;
+            max-width: 240px;
             object-fit: contain;
             border-radius: 16px;
             position: relative;
             z-index: 1;
-            filter: drop-shadow(0 20px 48px #4ade8025);
+            filter: drop-shadow(0 20px 48px #FFE60025);
         }
 
         /* ─── RANKING SECTION ─── */
@@ -395,9 +395,9 @@
         }
 
         .rank-card.rank-first .rank-tag {
-            background: #4ade8015;
+            background: #FFE60015;
             color: var(--accent);
-            border-color: #4ade8030;
+            border-color: #FFE60030;
         }
 
         .rank-cta-col {
@@ -444,7 +444,7 @@
         }
 
         .btn-rank:hover {
-            background: #6ee7a0;
+            background: #ffd000;
             transform: translateY(-1px);
         }
 
@@ -535,7 +535,7 @@
             border-left: 3px solid var(--accent);
         }
 
-        .compare-row.best:hover { background: #4ade8020; }
+        .compare-row.best:hover { background: #FFE60020; }
 
         .compare-store {
             display: flex;
