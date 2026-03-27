@@ -268,6 +268,213 @@
             filter: drop-shadow(0 20px 48px #4ade8025);
         }
 
+        /* ─── RANKING SECTION ─── */
+        .ranking-section {
+            max-width: 900px;
+            margin: 64px auto 0;
+            padding: 0 20px;
+        }
+
+        @media (max-width: 640px) {
+            .ranking-section { padding: 0 16px; margin-top: 48px; }
+        }
+
+        .ranking-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ranking-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fbbf2415;
+            border: 1px solid #fbbf2440;
+            color: var(--yellow);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+        }
+
+        .ranking-updated {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .ranking-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .rank-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            display: grid;
+            grid-template-columns: 48px 1fr auto;
+            align-items: center;
+            gap: 16px;
+            transition: border-color .2s;
+        }
+
+        .rank-card:hover { border-color: #35354a; }
+
+        .rank-card.rank-first {
+            background: var(--accent-dim);
+            border: 2px solid var(--accent);
+        }
+
+        .rank-card.rank-first:hover { border-color: var(--accent); }
+
+        .rank-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1;
+        }
+
+        .rank-card.rank-first .rank-num {
+            color: var(--accent);
+        }
+
+        .rank-num-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        .rank-card.rank-first .rank-num-label {
+            color: var(--accent);
+        }
+
+        .rank-info {}
+
+        .rank-brand {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .rank-card.rank-first .rank-brand { color: var(--accent); }
+
+        .rank-product {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .rank-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .rank-tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--surface2);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .rank-card.rank-first .rank-tag {
+            background: #4ade8015;
+            color: var(--accent);
+            border-color: #4ade8030;
+        }
+
+        .rank-cta-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .rank-winner-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #000;
+            background: var(--accent);
+            padding: 3px 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .rank-position-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--yellow);
+            background: #fbbf2412;
+            border: 1px solid #fbbf2430;
+            padding: 3px 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .btn-rank {
+            display: inline-block;
+            text-align: center;
+            background: var(--accent);
+            color: #000;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+
+        .btn-rank:hover {
+            background: #6ee7a0;
+            transform: translateY(-1px);
+        }
+
+        .btn-rank-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-rank-secondary:hover {
+            background: var(--surface2);
+            border-color: #35354a;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 600px) {
+            .rank-card {
+                grid-template-columns: 40px 1fr;
+                padding: 16px;
+                gap: 12px;
+            }
+            .rank-cta-col {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                min-width: unset;
+            }
+        }
+
         /* ─── COMPARE SECTION ─── */
         .compare-section {
             max-width: 900px;
@@ -544,6 +751,108 @@
     </div>
 </section>
 
+<!-- RANKING SECTION -->
+<section class="ranking-section fade-in delay-2">
+    <div class="ranking-header">
+        <div class="ranking-badge">🏆 Ranking atualizado</div>
+        <span class="ranking-updated">Última verificação: <span id="ranking-date">27/03/2026</span></span>
+    </div>
+    <div class="section-title">As 4 melhores creatinas do Brasil</div>
+    <div class="section-sub">Ranking baseado em custo-benefício, pureza, reputação da marca e avaliações de consumidores</div>
+
+    <div class="ranking-cards">
+
+        <!-- #1 Growth -->
+        <div class="rank-card rank-first">
+            <div>
+                <div class="rank-num">1</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Growth Supplements</div>
+                <div class="rank-product">Creatina Monohidratada 250g · Nova Fórmula</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Melhor preço/dose</span>
+                    <span class="rank-tag">Sem sabor</span>
+                    <span class="rank-tag">83 doses</span>
+                    <span class="rank-tag">+400k avaliações ML</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-winner-badge">Vencedora</span>
+                <a class="btn-rank" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver oferta →</a>
+            </div>
+        </div>
+
+        <!-- #2 Probiótica -->
+        <div class="rank-card">
+            <div>
+                <div class="rank-num">2</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Probiótica</div>
+                <div class="rank-product">Creatina Monohidratada 300g · Creapure®</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Creapure certificada</span>
+                    <span class="rank-tag">100 doses</span>
+                    <span class="rank-tag">Alta pureza</span>
+                    <span class="rank-tag">Marca clássica BR</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-position-badge">#2 Recomendada</span>
+                <a class="btn-rank btn-rank-secondary" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BClOwJVYJguVZ9iXa8bVJDskHHCTvMa3S5mjFuODnDPqMUbmhgm0BMiZs6%2FlA0iMYrgtFCVG1O04pFc7HNF8DL%2FIvQv7iIZ1afujZCvU00bj2VfIqvpYxe14u%2FB%2BLgIZ5lTYsFegG6E4685y053XWQBTuoDw1ehf7Qk6IfVuHO1athPS3NSBlCV1cH%2F%2Bw9ZagZMhqQ%3D%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver no ML →</a>
+            </div>
+        </div>
+
+        <!-- #3 Integralmedica -->
+        <div class="rank-card">
+            <div>
+                <div class="rank-num">3</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Integralmedica</div>
+                <div class="rank-product">Creatina Monohidratada 300g · Série Titanium</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Ótimo custo-benefício</span>
+                    <span class="rank-tag">Sem adição de açúcar</span>
+                    <span class="rank-tag">100 doses</span>
+                    <span class="rank-tag">Marca consolidada</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-position-badge">#3 Recomendada</span>
+                <a class="btn-rank btn-rank-secondary" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BPyW5kXZsObQqSIizU5DN61q4fOuB%2FalZoHP1mJSvutpn8DBb6WtJviaZ3%2BHkvj6R3%2FLX5f3oj3OrqjWgsWuzbSzFL4yrfVRNb%2F9zmaane2JBNdd6THaVUpJtbZMUVd0zhH3pm3vo1XzWCbPLXKD4EZ956wJsTmTzzfChJpriKoiWxbrrRGGPzL%2BUk%2B5OKy13PsoJA%3D%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver no ML →</a>
+            </div>
+        </div>
+
+        <!-- #4 Black Skull -->
+        <div class="rank-card">
+            <div>
+                <div class="rank-num">4</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Black Skull</div>
+                <div class="rank-product">Creatine 300g · USA Series</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Importada</span>
+                    <span class="rank-tag">Alta concentração</span>
+                    <span class="rank-tag">100 doses</span>
+                    <span class="rank-tag">Fã base fiel</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-position-badge">#4 Recomendada</span>
+                <a class="btn-rank btn-rank-secondary" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BC5IJHAor3nYaTtZyIyckqMQp0okX5OCDMB9ijix4REGSKag2WsDwg3rLYwDO%2BAJ0CXe%2BYGeeSkZ%2F7R7h2BusiL0%2B0pbffh7te%2BAoAMqzdMBkNgxovG0q8kvkUzJ6T3si3xtFmnjNLGcdHsz2RLeGUiGvEDEpxT4EqUkQn81kCozPnJeYDTDsRAze51mS5WKV7sO34k%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver no ML →</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
 <!-- COMPARE SECTION -->
 <section class="compare-section fade-in delay-1">
     <div class="section-title">Comparação de preços</div>
@@ -686,6 +995,9 @@
 
     var disclaimerDate = document.getElementById('disclaimer-date');
     if (disclaimerDate) disclaimerDate.textContent = shortDate;
+
+    var rankingDate = document.getElementById('ranking-date');
+    if (rankingDate) rankingDate.textContent = shortDate;
 })();
 </script>
 
