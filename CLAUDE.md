@@ -16,10 +16,12 @@ When the user asks to create a new landing page:
 4. **Create the sync script** at `scripts/sync_price_{slug}.py`
 5. **Do NOT touch** other existing pages — never overwrite root `index.html` or other product directories
 6. **Use the affiliate link** on ALL CTAs (hero, #1 ranking, final CTA) — same link everywhere
-7. **Commit and push to `main`** to trigger Vercel deploy
-8. **Reply with the clickable live URL**: `https://ml-afiliado.vercel.app/{product-slug}`
+7. **Add the new page to `sitemap.xml`** (append a new `<url>` entry with the full URL)
+8. **Commit and push to `main`** to trigger Vercel deploy
+9. **Reply with the clickable live URL**: `https://ml-afiliado.vercel.app/{product-slug}`
+10. **Remind the user** to submit the updated sitemap in Google Search Console if not already set up. Link: https://search.google.com/search-console — they need to add the property, verify ownership (offer to add the HTML meta verification tag to all pages if they provide it), and submit the sitemap URL `https://ml-afiliado.vercel.app/sitemap.xml`
 
-That's it. The user's only input is the product + affiliate link. The output is a live clickable URL.
+That's it. The user's only input is the product + affiliate link. The output is a live clickable URL + SEO reminder.
 
 ## Design System
 
