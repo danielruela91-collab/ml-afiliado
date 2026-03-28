@@ -21,11 +21,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Fetch price and update page
+      - name: Fetch prices and update pages
         id: sync
         run: |
-          python scripts/sync_price.py
-          echo "exit=$?" >> $GITHUB_OUTPUT
+          for script in scripts/sync_price*.py; do
+            python "$script" || true
+          done
         continue-on-error: true
 
       - name: Commit and push if changed
@@ -33,6 +34,6 @@ jobs:
         run: |
           git config user.name "price-bot"
           git config user.email "noreply@github.com"
-          git add air-fryer/index.html
+          git add -A
           git diff --cached --quiet && echo "Nothing to commit" || \
-            (git commit -m "chore: sync ML price $(date +'%Y-%m-%d')" && git push)
+            (git commit -m "chore: sync ML prices $(date +'%Y-%m-%d')" && git push)
