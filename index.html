@@ -1,24 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17362010961"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'AW-17362010961');
+    </script>
+    <!-- Event snippet for Compra conversion page -->
+    <script>
+      gtag('event', 'conversion', {
+          'send_to': 'AW-17362010961/30pLCIP_qo4cENGG7dZA',
+          'value': 1.0,
+          'currency': 'BRL',
+          'transaction_id': ''
+      });
+    </script>
+    <!-- Click conversion handler -->
+    <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+          'send_to': 'AW-17362010961/30pLCIP_qo4cENGG7dZA',
+          'value': 1.0,
+          'currency': 'BRL',
+          'transaction_id': '',
+          'event_callback': callback
+      });
+      return false;
+    }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creatina Growth 250g — Melhor Preço Online</title>
     <meta name="description" content="Creatina Monohidratada Growth Supplements 250g Nova Fórmula. Compare preços e garanta o menor valor. Frete grátis pelo Mercado Livre.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #060608;
             --surface: #0f0f12;
             --surface2: #18181e;
             --border: #252530;
-            --border-glow: #4ade8044;
+            --border-glow: #FFE60044;
             --text: #f0f0f5;
             --muted: #6b6b7a;
-            --accent: #4ade80;
-            --accent-dim: #4ade8015;
-            --accent-glow: #4ade8030;
+            --accent: #FFE600;
+            --accent-dim: #FFE60015;
+            --accent-glow: #FFE60030;
             --yellow: #fbbf24;
             --red: #f87171;
             --radius: 14px;
@@ -58,7 +94,7 @@
 
         @media (max-width: 640px) {
             .hero { grid-template-columns: 1fr; padding: 32px 16px 0; }
-            .hero-img { order: -1; max-width: 280px; margin: 0 auto; }
+            .hero-img { order: -1; max-width: 200px; margin: 0 auto; }
         }
 
         .hero-text {}
@@ -77,6 +113,19 @@
             margin-bottom: 18px;
             letter-spacing: .5px;
             text-transform: uppercase;
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 360px) {
+            .hero-badge {
+                font-size: 10px;
+                padding: 4px 9px;
+                letter-spacing: 0;
+                gap: 5px;
+            }
         }
 
         .hero-badge .dot {
@@ -93,10 +142,10 @@
 
         .hero h1 {
             font-family: 'Syne', sans-serif;
-            font-size: clamp(28px, 4.5vw, 42px);
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -1px;
+            font-size: clamp(24px, 6.5vw, 42px);
+            font-weight: 700;
+            line-height: 1.18;
+            letter-spacing: -.5px;
             margin-bottom: 14px;
         }
 
@@ -137,9 +186,9 @@
         }
 
         .price-big {
-            font-family: 'Syne', sans-serif;
-            font-size: 42px;
-            font-weight: 800;
+            font-family: 'Inter', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
             color: var(--accent);
             line-height: 1;
         }
@@ -180,7 +229,7 @@
         }
 
         .btn-cta:hover {
-            background: #6ee7a0;
+            background: #ffd000;
             transform: translateY(-2px);
             box-shadow: 0 4px 32px var(--accent-glow);
         }
@@ -211,12 +260,219 @@
 
         .hero-img img {
             width: 100%;
-            max-width: 320px;
+            max-width: 240px;
             object-fit: contain;
             border-radius: 16px;
             position: relative;
             z-index: 1;
-            filter: drop-shadow(0 20px 48px #4ade8025);
+            filter: drop-shadow(0 20px 48px #FFE60025);
+        }
+
+        /* ─── RANKING SECTION ─── */
+        .ranking-section {
+            max-width: 900px;
+            margin: 64px auto 0;
+            padding: 0 20px;
+        }
+
+        @media (max-width: 640px) {
+            .ranking-section { padding: 0 16px; margin-top: 48px; }
+        }
+
+        .ranking-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ranking-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fbbf2415;
+            border: 1px solid #fbbf2440;
+            color: var(--yellow);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+        }
+
+        .ranking-updated {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .ranking-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .rank-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            display: grid;
+            grid-template-columns: 48px 1fr auto;
+            align-items: center;
+            gap: 16px;
+            transition: border-color .2s;
+        }
+
+        .rank-card:hover { border-color: #35354a; }
+
+        .rank-card.rank-first {
+            background: var(--accent-dim);
+            border: 2px solid var(--accent);
+        }
+
+        .rank-card.rank-first:hover { border-color: var(--accent); }
+
+        .rank-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1;
+        }
+
+        .rank-card.rank-first .rank-num {
+            color: var(--accent);
+        }
+
+        .rank-num-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        .rank-card.rank-first .rank-num-label {
+            color: var(--accent);
+        }
+
+        .rank-info {}
+
+        .rank-brand {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+
+        .rank-card.rank-first .rank-brand { color: var(--accent); }
+
+        .rank-product {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .rank-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .rank-tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--surface2);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .rank-card.rank-first .rank-tag {
+            background: #FFE60015;
+            color: var(--accent);
+            border-color: #FFE60030;
+        }
+
+        .rank-cta-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .rank-winner-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #000;
+            background: var(--accent);
+            padding: 3px 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .rank-position-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--yellow);
+            background: #fbbf2412;
+            border: 1px solid #fbbf2430;
+            padding: 3px 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .btn-rank {
+            display: inline-block;
+            text-align: center;
+            background: var(--accent);
+            color: #000;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+
+        .btn-rank:hover {
+            background: #ffd000;
+            transform: translateY(-1px);
+        }
+
+        .btn-rank-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-rank-secondary:hover {
+            background: var(--surface2);
+            border-color: #35354a;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 600px) {
+            .rank-card {
+                grid-template-columns: 40px 1fr;
+                padding: 16px;
+                gap: 12px;
+            }
+            .rank-cta-col {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                min-width: unset;
+            }
         }
 
         /* ─── COMPARE SECTION ─── */
@@ -232,8 +488,8 @@
 
         .section-title {
             font-family: 'Syne', sans-serif;
-            font-size: 22px;
-            font-weight: 800;
+            font-size: 20px;
+            font-weight: 700;
             margin-bottom: 6px;
         }
 
@@ -279,7 +535,7 @@
             border-left: 3px solid var(--accent);
         }
 
-        .compare-row.best:hover { background: #4ade8020; }
+        .compare-row.best:hover { background: #FFE60020; }
 
         .compare-store {
             display: flex;
@@ -320,9 +576,9 @@
         }
 
         .compare-price {
-            font-family: 'Syne', sans-serif;
-            font-size: 18px;
-            font-weight: 800;
+            font-family: 'Inter', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
         }
 
         .compare-row.best .compare-price {
@@ -414,8 +670,8 @@
 
         .final-cta h2 {
             font-family: 'Syne', sans-serif;
-            font-size: 26px;
-            font-weight: 800;
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 8px;
         }
 
@@ -464,7 +720,7 @@
     <div class="hero-text fade-in">
         <div class="hero-badge">
             <span class="dot"></span>
-            Verificado hoje — 27 Mar 2026
+            Verificado hoje — <span id="hero-date">27 Mar 2026</span>
         </div>
         <h1>Creatina Growth<br><em>Monohidratada</em><br>250g</h1>
         <p class="hero-sub">Nova Fórmula · Sem sabor · 83 doses de 3g<br>Comprei na loja oficial por R$62. Achei <strong>R$39 no ML</strong>.</p>
@@ -479,7 +735,7 @@
             <div class="price-hero-note">✓ Frete grátis &nbsp;·&nbsp; ✓ Parcelado sem juros &nbsp;·&nbsp; ✓ Entrega em 1-3 dias</div>
         </div>
 
-        <a class="btn-cta" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored">
+        <a class="btn-cta" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">
             Ver no Mercado Livre →
             <span>Garantir R$&nbsp;39 com frete grátis</span>
         </a>
@@ -495,10 +751,112 @@
     </div>
 </section>
 
+<!-- RANKING SECTION -->
+<section class="ranking-section fade-in delay-2">
+    <div class="ranking-header">
+        <div class="ranking-badge">🏆 Ranking atualizado</div>
+        <span class="ranking-updated">Última verificação: <span id="ranking-date">27/03/2026</span></span>
+    </div>
+    <div class="section-title">As 4 melhores creatinas do Brasil</div>
+    <div class="section-sub">Ranking baseado em custo-benefício, pureza, reputação da marca e avaliações de consumidores</div>
+
+    <div class="ranking-cards">
+
+        <!-- #1 Growth -->
+        <div class="rank-card rank-first">
+            <div>
+                <div class="rank-num">1</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Growth Supplements</div>
+                <div class="rank-product">Creatina Monohidratada 250g · Nova Fórmula</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Melhor preço/dose</span>
+                    <span class="rank-tag">Sem sabor</span>
+                    <span class="rank-tag">83 doses</span>
+                    <span class="rank-tag">+400k avaliações ML</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-winner-badge">Vencedora</span>
+                <a class="btn-rank" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver oferta →</a>
+            </div>
+        </div>
+
+        <!-- #2 Soldiers Nutrition -->
+        <div class="rank-card">
+            <div>
+                <div class="rank-num">2</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Soldiers Nutrition</div>
+                <div class="rank-product">Creatina Monohidratada 300g · Creapure®</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Creapure certificada</span>
+                    <span class="rank-tag">100 doses</span>
+                    <span class="rank-tag">Alta pureza</span>
+                    <span class="rank-tag">Marca clássica BR</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-position-badge">#2 Recomendada</span>
+                <a class="btn-rank btn-rank-secondary" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BClOwJVYJguVZ9iXa8bVJDskHHCTvMa3S5mjFuODnDPqMUbmhgm0BMiZs6%2FlA0iMYrgtFCVG1O04pFc7HNF8DL%2FIvQv7iIZ1afujZCvU00bj2VfIqvpYxe14u%2FB%2BLgIZ5lTYsFegG6E4685y053XWQBTuoDw1ehf7Qk6IfVuHO1athPS3NSBlCV1cH%2F%2Bw9ZagZMhqQ%3D%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver no ML →</a>
+            </div>
+        </div>
+
+        <!-- #3 Dark Lab -->
+        <div class="rank-card">
+            <div>
+                <div class="rank-num">3</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Dark Lab</div>
+                <div class="rank-product">Creatina Monohidratada 300g · Série Titanium</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Ótimo custo-benefício</span>
+                    <span class="rank-tag">Sem adição de açúcar</span>
+                    <span class="rank-tag">100 doses</span>
+                    <span class="rank-tag">Marca consolidada</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-position-badge">#3 Recomendada</span>
+                <a class="btn-rank btn-rank-secondary" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BPyW5kXZsObQqSIizU5DN61q4fOuB%2FalZoHP1mJSvutpn8DBb6WtJviaZ3%2BHkvj6R3%2FLX5f3oj3OrqjWgsWuzbSzFL4yrfVRNb%2F9zmaane2JBNdd6THaVUpJtbZMUVd0zhH3pm3vo1XzWCbPLXKD4EZ956wJsTmTzzfChJpriKoiWxbrrRGGPzL%2BUk%2B5OKy13PsoJA%3D%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver no ML →</a>
+            </div>
+        </div>
+
+        <!-- #4 Dux -->
+        <div class="rank-card">
+            <div>
+                <div class="rank-num">4</div>
+                <div class="rank-num-label">Lugar</div>
+            </div>
+            <div class="rank-info">
+                <div class="rank-brand">Dux</div>
+                <div class="rank-product">Creatine 300g · USA Series</div>
+                <div class="rank-tags">
+                    <span class="rank-tag">Importada</span>
+                    <span class="rank-tag">Alta concentração</span>
+                    <span class="rank-tag">100 doses</span>
+                    <span class="rank-tag">Fã base fiel</span>
+                </div>
+            </div>
+            <div class="rank-cta-col">
+                <span class="rank-position-badge">#4 Recomendada</span>
+                <a class="btn-rank btn-rank-secondary" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BC5IJHAor3nYaTtZyIyckqMQp0okX5OCDMB9ijix4REGSKag2WsDwg3rLYwDO%2BAJ0CXe%2BYGeeSkZ%2F7R7h2BusiL0%2B0pbffh7te%2BAoAMqzdMBkNgxovG0q8kvkUzJ6T3si3xtFmnjNLGcdHsz2RLeGUiGvEDEpxT4EqUkQn81kCozPnJeYDTDsRAze51mS5WKV7sO34k%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver no ML →</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
 <!-- COMPARE SECTION -->
 <section class="compare-section fade-in delay-1">
     <div class="section-title">Comparação de preços</div>
-    <div class="section-sub">Mesmo produto · Creatina Growth Monohidratada 250g · Consultado em 27/03/2026</div>
+    <div class="section-sub">Mesmo produto · Creatina Growth Monohidratada 250g · Consultado em <span id="compare-date">27/03/2026</span></div>
 
     <div class="compare-table">
         <!-- header -->
@@ -604,7 +962,7 @@
 <div class="final-cta fade-in delay-3">
     <h2>Preço não dura muito</h2>
     <p>Promoções no Mercado Livre costumam mudar rápido. Aproveitei o desconto — você decide.</p>
-    <a class="btn-cta" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored">
+    <a class="btn-cta" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">
         Comprar por R$ 39 →
         <span>Abre no Mercado Livre com frete grátis</span>
     </a>
@@ -614,9 +972,34 @@
 <div class="disclaimer">
     Este site contém links de afiliado do programa de afiliados do Mercado Livre.<br>
     Ao comprar pelo link acima, posso receber uma comissão sem custo adicional para você.<br>
-    Preços conferidos em 27/03/2026 e sujeitos a alteração sem aviso prévio.<br>
+    Preços conferidos em <span id="disclaimer-date">27/03/2026</span> e sujeitos a alteração sem aviso prévio.<br>
     Os preços de outras lojas são estimativas de mercado para fins comparativos.
 </div>
+
+<script>
+(function () {
+    var now = new Date();
+    var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    var day = now.getDate();
+    var month = months[now.getMonth()];
+    var year = now.getFullYear();
+    var dd = String(day).padStart(2, '0');
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+
+    var heroDate = document.getElementById('hero-date');
+    if (heroDate) heroDate.textContent = day + ' ' + month + ' ' + year;
+
+    var shortDate = dd + '/' + mm + '/' + year;
+    var compareDate = document.getElementById('compare-date');
+    if (compareDate) compareDate.textContent = shortDate;
+
+    var disclaimerDate = document.getElementById('disclaimer-date');
+    if (disclaimerDate) disclaimerDate.textContent = shortDate;
+
+    var rankingDate = document.getElementById('ranking-date');
+    if (rankingDate) rankingDate.textContent = shortDate;
+})();
+</script>
 
 </body>
 </html>
