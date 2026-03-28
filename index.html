@@ -10,6 +10,8 @@
       "image": "https://http2.mlstatic.com/D_NQ_NP_2X_662415-MLA97812910758_112025-F.webp",
       "description": "Creatina Monohidratada Growth Supplements 250g Nova Fórmula. Melhor custo-benefício do mercado. Frete grátis pelo Mercado Livre.",
       "brand": { "@type": "Brand", "name": "Growth Supplements" },
+      "sku": "MLB4229498",
+      "mpn": "MLB4229498",
       "offers": {
         "@type": "Offer",
         "url": "https://ml-afiliado.vercel.app/",
@@ -61,6 +63,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creatina Growth 250g — Melhor Preço Online</title>
     <meta name="description" content="Creatina Monohidratada Growth Supplements 250g Nova Fórmula. Compare preços e garanta o menor valor. Frete grátis pelo Mercado Livre.">
+    <link rel="canonical" href="https://ml-afiliado.vercel.app/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -736,19 +739,28 @@
 </div>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" itemscope itemtype="https://schema.org/Product">
+    <meta itemprop="sku" content="MLB4229498">
+    <meta itemprop="mpn" content="MLB4229498">
+    <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
+        <meta itemprop="name" content="Growth Supplements">
+    </div>
     <div class="hero-text fade-in">
         <div class="hero-badge">
             <span class="dot"></span>
             Verificado hoje — <span id="hero-date">27 Mar 2026</span>
         </div>
-        <h1>Creatina Growth<br><em>Monohidratada</em><br>250g</h1>
-        <p class="hero-sub">Nova Fórmula · Sem sabor · 83 doses de 3g<br>Comprei na loja oficial por R$62. Achei <strong>R$39 no ML</strong>.</p>
+        <h1 itemprop="name">Creatina Growth<br><em>Monohidratada</em><br>250g</h1>
+        <p class="hero-sub" itemprop="description">Nova Fórmula · Sem sabor · 83 doses de 3g<br>Comprei na loja oficial por R$62. Achei <strong>R$39 no ML</strong>.</p>
 
-        <div class="price-hero">
+        <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <meta itemprop="priceCurrency" content="BRL">
+            <meta itemprop="availability" content="https://schema.org/InStock">
+            <meta itemprop="itemCondition" content="https://schema.org/NewCondition">
+            <link itemprop="url" href="https://ml-afiliado.vercel.app/">
             <div class="price-hero-store">Mercado Livre · Vendedor oficial</div>
             <div class="price-hero-row">
-                <span class="price-big">R$&nbsp;39</span>
+                <span class="price-big" itemprop="price" content="39.00">R$&nbsp;39</span>
                 <span class="price-hero-old">R$&nbsp;62</span>
                 <span class="price-hero-badge">-37%</span>
             </div>
@@ -763,6 +775,7 @@
 
     <div class="hero-img fade-in delay-2">
         <img
+            itemprop="image"
             src="https://http2.mlstatic.com/D_NQ_NP_2X_662415-MLA97812910758_112025-F.webp"
             alt="Creatina Monohidratada Growth Supplements 250g Nova Fórmula"
             loading="eager"

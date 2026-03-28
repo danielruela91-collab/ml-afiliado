@@ -47,6 +47,8 @@
       "image": "https://http2.mlstatic.com/D_NQ_NP_2X_850274-MLU78125457342_082024-F.webp",
       "description": "Air Fryer Philips Walita Série 1000 XL NA130 6,2L 1700W com Tecnologia RapidAir. Melhor custo-benefício do mercado. Frete grátis pelo Mercado Livre.",
       "brand": { "@type": "Brand", "name": "Philips Walita" },
+      "sku": "MLB39292059",
+      "mpn": "MLB39292059",
       "offers": {
         "@type": "Offer",
         "url": "https://ml-afiliado.vercel.app/air-fryer",
@@ -60,6 +62,7 @@
     </script>
     <title>Air Fryer Philips Walita Série 1000 XL 6,2L — Melhor Preço Online</title>
     <meta name="description" content="Air Fryer Philips Walita Série 1000 XL NA130 6,2L 1700W com Tecnologia RapidAir. Compare preços e garanta o menor valor. Frete grátis pelo Mercado Livre.">
+    <link rel="canonical" href="https://ml-afiliado.vercel.app/air-fryer">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -735,19 +738,28 @@
 </div>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero" itemscope itemtype="https://schema.org/Product">
+    <meta itemprop="sku" content="MLB39292059">
+    <meta itemprop="mpn" content="MLB39292059">
+    <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
+        <meta itemprop="name" content="Philips Walita">
+    </div>
     <div class="hero-text fade-in">
         <div class="hero-badge">
             <span class="dot"></span>
             Verificado hoje — <span id="hero-date">28 Mar 2026</span>
         </div>
-        <h1>Air Fryer Philips Walita<br><em>Serie 1000 XL</em><br>6,2L</h1>
-        <p class="hero-sub">1700W · Tecnologia RapidAir · 90% menos gordura<br>Na loja oficial sai R$499. Achei <strong>R$329 no ML</strong>.</p>
+        <h1 itemprop="name">Air Fryer Philips Walita<br><em>Serie 1000 XL</em><br>6,2L</h1>
+        <p class="hero-sub" itemprop="description">1700W · Tecnologia RapidAir · 90% menos gordura<br>Na loja oficial sai R$499. Achei <strong>R$329 no ML</strong>.</p>
 
-        <div class="price-hero">
+        <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <meta itemprop="priceCurrency" content="BRL">
+            <meta itemprop="availability" content="https://schema.org/InStock">
+            <meta itemprop="itemCondition" content="https://schema.org/NewCondition">
+            <link itemprop="url" href="https://ml-afiliado.vercel.app/air-fryer">
             <div class="price-hero-store">Mercado Livre · Vendedor oficial</div>
             <div class="price-hero-row">
-                <span class="price-big">R$&nbsp;329</span>
+                <span class="price-big" itemprop="price" content="329.00">R$&nbsp;329</span>
                 <span class="price-hero-old">R$&nbsp;499</span>
                 <span class="price-hero-badge">-34%</span>
             </div>
@@ -762,6 +774,7 @@
 
     <div class="hero-img fade-in delay-2">
         <img
+            itemprop="image"
             src="https://http2.mlstatic.com/D_NQ_NP_2X_850274-MLU78125457342_082024-F.webp"
             alt="Air Fryer Philips Walita Serie 1000 XL NA130 6,2L 1700W Preta"
             loading="eager"

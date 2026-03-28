@@ -129,11 +129,13 @@ jobs:
 - Price field: `response["buy_box_winner"]["price"]` (fallback: `response["price"]`)
 - Set `HTML_FILE` to the correct path (e.g. `"air-fryer/index.html"`)
 - Elements to update:
-  - `<span class="price-big">R$&nbsp;{price}</span>`
+  - `<span class="price-big" itemprop="price" content="{price}.00">R$&nbsp;{price}</span>` (visible price + microdata content attr)
   - `<span class="price-hero-badge">-{discount}%</span>`
   - `Achei <strong>R${price}</strong> no ML`
   - `<div class="compare-price">R$ {price}</div>` (ML row — no style attribute)
   - `Comprar por R$ {price} →` (CTA button text)
+  - JSON-LD `"price": "{price}.00"` in `<head>`
+  - Microdata `itemprop="price" content="{price}.00"` on price-big span
   - Competitor `+XX% mais caro` badges (recalculate from known competitor prices)
 - Exit 0 if changed, exit 2 if no change (not an error)
 
@@ -146,9 +148,72 @@ jobs:
 
 ### Required Elements for Shopping Ads Approval
 Every product page must have:
-1. **Product JSON-LD** (`<script type="application/ld+json">`) in `<head>` with: `@type: Product`, `name`, `image`, `description`, `brand`, `offers` (price, priceCurrency BRL, availability InStock, itemCondition NewCondition, seller ML, url canonical)
-2. **Footer** with links to: Política de Devoluções · Política de Privacidade · Contato
-3. **Policy pages** at `/devolucoes`, `/politica-de-privacidade`, `/contato` (already created)
+1. **Product JSON-LD** (`<script type="application/ld+json">`) in `<head>` with: `@type: Product`, `name`, `image`, `description`, `brand`, `sku`, `mpn`, `offers` (price, priceCurrency BRL, availability InStock, itemCondition NewCondition, seller ML, url canonical)
+2. **Schema.org Microdata** on visible HTML elements (enables Google's automatic item updates — critical for price/availability sync)
+3. **Canonical link** (`<link rel="canonical">`) in `<head>` matching the `offers.url` in JSON-LD
+4. **Footer** with links to: Política de Devoluções · Política de Privacidade · Contato
+5. **Policy pages** at `/devolucoes`, `/politica-de-privacidade`, `/contato` (already created)
+
+### Microdata on Visible Elements (Automatic Item Updates)
+Google uses microdata on visible elements to verify that JSON-LD data matches what users see. This is **required** for automatic item updates (price/availability sync). Without it, products get reproved when the sync script updates the page but GMC hasn't re-fetched yet.
+
+Apply these attributes to the hero `<section>`:
+```html
+<section class="hero" itemscope itemtype="https://schema.org/Product">
+    <meta itemprop="sku" content="MLBXXXXXXXX">
+    <meta itemprop="mpn" content="MLBXXXXXXXX">
+    <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
+        <meta itemprop="name" content="Nome da Marca">
+    </div>
+    <!-- ... -->
+    <h1 itemprop="name">Nome do Produto</h1>
+    <p class="hero-sub" itemprop="description">Descrição visível...</p>
+
+    <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+        <meta itemprop="priceCurrency" content="BRL">
+        <meta itemprop="availability" content="https://schema.org/InStock">
+        <meta itemprop="itemCondition" content="https://schema.org/NewCondition">
+        <link itemprop="url" href="https://ml-afiliado.vercel.app/produto-slug">
+        <!-- ... -->
+        <span class="price-big" itemprop="price" content="000.00">R$&nbsp;000</span>
+        <!-- ... -->
+    </div>
+    <!-- ... -->
+    <img itemprop="image" src="https://http2.mlstatic.com/..." alt="...">
+</section>
+```
+
+### Canonical Link
+Every product page must include in `<head>`:
+```html
+<link rel="canonical" href="https://ml-afiliado.vercel.app/produto-slug">
+```
+The canonical URL must match `offers.url` in JSON-LD and `<link itemprop="url">` in microdata.
+
+### robots.txt — Google Crawler Access
+The `robots.txt` must explicitly allow all Google crawlers (Search, Ads, Shopping, Images):
+```
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ml-afiliado.vercel.app/sitemap.xml
+```
+**Never** restrict crawl rate in Google Search Console — keep it at "Permitir que o Google otimize meu site".
 
 ### JSON-LD Template for New Pages
 ```html
@@ -160,6 +225,8 @@ Every product page must have:
   "image": "https://http2.mlstatic.com/...",
   "description": "Descrição do produto...",
   "brand": { "@type": "Brand", "name": "Marca" },
+  "sku": "MLBXXXXXXXX",
+  "mpn": "MLBXXXXXXXX",
   "offers": {
     "@type": "Offer",
     "url": "https://ml-afiliado.vercel.app/produto-slug",
@@ -173,8 +240,8 @@ Every product page must have:
 </script>
 ```
 
-### Sync Script — JSON-LD Price Update
-Each `sync_price_*.py` must also update the JSON-LD price. Add this block **before** competitor recalculation:
+### Sync Script — Price Update (JSON-LD + Microdata)
+Each `sync_price_*.py` must update **both** JSON-LD and microdata prices. Add these blocks **before** competitor recalculation:
 ```python
 # JSON-LD structured data price
 html = re.sub(
@@ -182,11 +249,28 @@ html = re.sub(
     rf'\g<1>{price}.00\2',
     html,
 )
+
+# Microdata price content attribute
+html = re.sub(
+    r'(itemprop="price" content=")\d+\.\d+(")',
+    rf'\g<1>{price}.00\2',
+    html,
+)
 ```
 
+### GMC Product Approval Best Practices
+- **Keep product IDs stable**: never change the `id` attribute in GMC feed — treat `sku`/`mpn` (MLB ID) as the permanent identifier
+- **Avoid structural HTML changes**: don't move price elements around in the DOM — Google caches the structure and reproves products if it can't find the price in the expected location
+- **Don't use JS animations for prices**: prices must be in static HTML, not rendered via JavaScript or CSS animations
+- **Enable automatic item updates** in GMC → Melhorias automáticas: uses the microdata to keep GMC in sync when the nightly sync script updates prices
+- **Dates are dynamic (OK)**: only dates are JS-injected — prices are always in static HTML, which is correct
+- **Valid HTML**: use W3C validator to check pages periodically
+
 ### Updated New Landing Page Protocol (steps 3–4 addendum)
-- After creating the page HTML, add JSON-LD to `<head>`
-- After creating the sync script, add the JSON-LD price update regex
+- After creating the page HTML, add JSON-LD to `<head>` (with `sku` and `mpn`)
+- Add `<link rel="canonical">` to `<head>`
+- Add microdata attributes to hero section (itemscope, itemprop on name, description, image, price, offers)
+- After creating the sync script, add both JSON-LD and microdata price update regexes
 - Footer must include all 3 policy links (Devoluções · Privacidade · Contato)
 
 ## Google Ads Tracking

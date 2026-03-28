@@ -81,6 +81,13 @@ def update_html(price: int) -> bool:
         html,
     )
 
+    # 6b. Microdata price content attribute
+    html = re.sub(
+        r'(itemprop="price" content=")\d+\.\d+(")',
+        rf'\g<1>{price}.00\2',
+        html,
+    )
+
     # 7. Recalculate competitor % differences
     known_competitors = [399, 359, 420, 389]
     for comp in known_competitors:
