@@ -137,6 +137,58 @@ jobs:
   - Competitor `+XX% mais caro` badges (recalculate from known competitor prices)
 - Exit 0 if changed, exit 2 if no change (not an error)
 
+## Google Merchant Center (GMC) Compliance
+
+### Site Status
+- Site `ml-afiliado.vercel.app` is already **Verificado + Reivindicado** in GMC (account: ML Select, ID 5753861172)
+- No verification meta tag needed — site was auto-verified via Google Search Console
+- GMC is linked to Google Ads account Daniel Test (267-443-1372) via Business Manager
+
+### Required Elements for Shopping Ads Approval
+Every product page must have:
+1. **Product JSON-LD** (`<script type="application/ld+json">`) in `<head>` with: `@type: Product`, `name`, `image`, `description`, `brand`, `offers` (price, priceCurrency BRL, availability InStock, itemCondition NewCondition, seller ML, url canonical)
+2. **Footer** with links to: Política de Devoluções · Política de Privacidade · Contato
+3. **Policy pages** at `/devolucoes`, `/politica-de-privacidade`, `/contato` (already created)
+
+### JSON-LD Template for New Pages
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "Nome completo do produto",
+  "image": "https://http2.mlstatic.com/...",
+  "description": "Descrição do produto...",
+  "brand": { "@type": "Brand", "name": "Marca" },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://ml-afiliado.vercel.app/produto-slug",
+    "priceCurrency": "BRL",
+    "price": "000.00",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": { "@type": "Organization", "name": "Mercado Livre" }
+  }
+}
+</script>
+```
+
+### Sync Script — JSON-LD Price Update
+Each `sync_price_*.py` must also update the JSON-LD price. Add this block **before** competitor recalculation:
+```python
+# JSON-LD structured data price
+html = re.sub(
+    r'("price":\s*")\d+\.\d+(")',
+    rf'\g<1>{price}.00\2',
+    html,
+)
+```
+
+### Updated New Landing Page Protocol (steps 3–4 addendum)
+- After creating the page HTML, add JSON-LD to `<head>`
+- After creating the sync script, add the JSON-LD price update regex
+- Footer must include all 3 policy links (Devoluções · Privacidade · Contato)
+
 ## Google Ads Tracking
 - All pages include the same Google Ads tag: `AW-17362010961`
 - Conversion ID: `AW-17362010961/30pLCIP_qo4cENGG7dZA`
