@@ -12,7 +12,7 @@ PRODUCT_ID = "MLB39292059"
 PRODUCT_URL = f"https://api.mercadolibre.com/products/{PRODUCT_ID}"
 # Reference (store) price used to calculate discount %
 STORE_PRICE = 499
-HTML_FILE = "index.html"
+HTML_FILE = "air-fryer/index.html"
 
 
 def fetch_ml_price() -> int:

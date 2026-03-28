@@ -33,6 +33,6 @@ jobs:
         run: |
           git config user.name "price-bot"
           git config user.email "noreply@github.com"
-          git add index.html
+          git add air-fryer/index.html
           git diff --cached --quiet && echo "Nothing to commit" || \
             (git commit -m "chore: sync ML price $(date +'%Y-%m-%d')" && git push)
