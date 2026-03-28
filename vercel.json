@@ -1,3 +1,8 @@
 {
-  "version": 2
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/air-fryer", "destination": "/air-fryer/index.html" }
+  ]
 }
