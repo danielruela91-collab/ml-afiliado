@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-Fetch the current price of the exact ML listing (MLB1584301524)
-and update all price occurrences in index.html.
+Fetch the current price of the Philips Walita Air Fryer Serie 1000 XL NA130
+from the ML catalog API and update all price occurrences in index.html.
 """
 import json
 import re
 import sys
 import urllib.request
 
-PRODUCT_ID = "MLBUY0QGQ841V"
+PRODUCT_ID = "MLB39292059"
 PRODUCT_URL = f"https://api.mercadolibre.com/products/{PRODUCT_ID}"
 # Reference (store) price used to calculate discount %
-STORE_PRICE = 62
+STORE_PRICE = 499
 HTML_FILE = "index.html"
 
 
@@ -53,7 +53,7 @@ def update_html(price: int) -> bool:
         html,
     )
 
-    # 3. Hero subtext "Achei R$XX no ML"
+    # 3. Hero subtext "Achei R$XXX no ML"
     html = re.sub(
         r'(Achei <strong>R\$)\d+(</strong>)',
         rf'\g<1>{price}\2',
@@ -75,7 +75,7 @@ def update_html(price: int) -> bool:
     )
 
     # 6. Recalculate competitor % differences
-    known_competitors = [62, 54, 67, 59]
+    known_competitors = [399, 359, 420, 389]
     for comp in known_competitors:
         if comp > price:
             pct = round((comp / price - 1) * 100)
