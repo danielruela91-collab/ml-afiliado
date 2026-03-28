@@ -1,9 +1,25 @@
 # Landing Page Preferences
 
 ## Stack & Deployment
-- Single `index.html` — no build system
+- Single `index.html` per product — no build system
 - Deploy via Vercel GitHub integration: push to `main` → auto-deploy
+- Vercel domain: `ml-afiliado.vercel.app`
 - All changes: git commit + push to `main`
+
+## New Landing Page Protocol
+
+When the user asks to create a new landing page:
+
+1. **Ask for the affiliate link first** (user will provide `meli.la/XXXXX` or long ML URL)
+2. **Research** the product: current ML price, competitor prices, top 4 alternatives in the category, product specs, product image from mlstatic.com
+3. **Create the page** at `/{product-slug}/index.html` (SEO-friendly slug, e.g. `/air-fryer/`, `/whey-protein/`)
+4. **Create the sync script** at `scripts/sync_price_{slug}.py`
+5. **Do NOT touch** other existing pages — never overwrite root `index.html` or other product directories
+6. **Use the affiliate link** on ALL CTAs (hero, #1 ranking, final CTA) — same link everywhere
+7. **Commit and push to `main`** to trigger Vercel deploy
+8. **Reply with the clickable live URL**: `https://ml-afiliado.vercel.app/{product-slug}`
+
+That's it. The user's only input is the product + affiliate link. The output is a live clickable URL.
 
 ## Design System
 
@@ -60,10 +76,10 @@
 
 ## Multi-Page Structure
 - Each product gets its own SEO-friendly subdirectory: `/{product-slug}/index.html`
-- Example: `/air-fryer/index.html` → served at `/air-fryer`
+- Example: `/air-fryer/index.html` → served at `ml-afiliado.vercel.app/air-fryer`
 - Root `index.html` is the creatina page — do NOT overwrite it
 - `vercel.json` uses `"cleanUrls": true` to serve subdirectory pages cleanly
-- Vercel domain: `ml-afiliado.vercel.app`
+- When done, always share the final clickable link: `https://ml-afiliado.vercel.app/{product-slug}`
 
 ## Nightly Price Sync (GitHub Actions)
 
@@ -86,7 +102,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Fetch price and update pages
+      - name: Fetch prices and update pages
         id: sync
         run: |
           for script in scripts/sync_price*.py; do
@@ -104,9 +120,9 @@ jobs:
 ```
 
 ### `scripts/sync_price_<product>.py`
-- One script per product page (e.g. `sync_price.py` for root, `sync_price_airfryer.py` for `/air-fryer/`)
-- Use exact ML catalog product ID (ask user for it — found in the product page URL as `MLB-XXXXXXXX`)
-- Full ID format: `MLBXXXXXXXX` (e.g. `MLBUY0QGQ841V`)
+- One script per product page (e.g. `sync_price_airfryer.py` for `/air-fryer/`)
+- Use exact ML catalog product ID (found in the product page URL as `MLB-XXXXXXXX`)
+- Full ID format: `MLBXXXXXXXX` (e.g. `MLB39292059`)
 - API endpoint: `https://api.mercadolibre.com/products/{PRODUCT_ID}`
 - Price field: `response["buy_box_winner"]["price"]` (fallback: `response["price"]`)
 - Set `HTML_FILE` to the correct path (e.g. `"air-fryer/index.html"`)
@@ -118,3 +134,8 @@ jobs:
   - `Comprar por R$ {price} →` (CTA button text)
   - Competitor `+XX% mais caro` badges (recalculate from known competitor prices)
 - Exit 0 if changed, exit 2 if no change (not an error)
+
+## Google Ads Tracking
+- All pages include the same Google Ads tag: `AW-17362010961`
+- Conversion ID: `AW-17362010961/30pLCIP_qo4cENGG7dZA`
+- `gtag_report_conversion()` fires on all CTA clicks
