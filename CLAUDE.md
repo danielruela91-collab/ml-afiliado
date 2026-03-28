@@ -160,13 +160,14 @@ Google uses microdata on visible elements to verify that JSON-LD data matches wh
 Apply these attributes to the hero `<section>`:
 ```html
 <section class="hero" itemscope itemtype="https://schema.org/Product">
-    <meta itemprop="sku" content="MLBXXXXXXXX">
-    <meta itemprop="mpn" content="MLBXXXXXXXX">
-    <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
-        <meta itemprop="name" content="Nome da Marca">
-    </div>
-    <!-- ... -->
-    <h1 itemprop="name">Nome do Produto</h1>
+    <div class="hero-text fade-in">
+        <meta itemprop="sku" content="MLBXXXXXXXX">
+        <meta itemprop="mpn" content="MLBXXXXXXXX">
+        <div itemprop="brand" itemscope itemtype="https://schema.org/Brand" style="display:none">
+            <meta itemprop="name" content="Nome da Marca">
+        </div>
+        <!-- ... -->
+        <h1 itemprop="name">Nome do Produto</h1>
     <p class="hero-sub" itemprop="description">Descrição visível...</p>
 
     <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
@@ -179,9 +180,13 @@ Apply these attributes to the hero `<section>`:
         <!-- ... -->
     </div>
     <!-- ... -->
-    <img itemprop="image" src="https://http2.mlstatic.com/..." alt="...">
+    </div><!-- end .hero-text -->
+    <div class="hero-img fade-in delay-2">
+        <img itemprop="image" src="https://http2.mlstatic.com/..." alt="...">
+    </div>
 </section>
 ```
+**Important**: Place `<meta>` and brand `<div>` inside `.hero-text`, NOT as direct children of `.hero` — the hero uses CSS grid (`1fr 1fr`) and extra direct children break the 2-column layout. The brand div must have `style="display:none"` to avoid layout impact.
 
 ### Canonical Link
 Every product page must include in `<head>`:

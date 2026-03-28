@@ -116,7 +116,7 @@
         }
 
         @media (max-width: 640px) {
-            .hero { grid-template-columns: 1fr; padding: 32px 16px 0; }
+            .hero { grid-template-columns: 1fr; padding: 32px 16px 0; gap: 16px; }
             .hero-img { order: -1; max-width: 200px; margin: 0 auto; }
         }
 
@@ -740,12 +740,12 @@
 
 <!-- HERO -->
 <section class="hero" itemscope itemtype="https://schema.org/Product">
-    <meta itemprop="sku" content="MLB4229498">
-    <meta itemprop="mpn" content="MLB4229498">
-    <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
-        <meta itemprop="name" content="Growth Supplements">
-    </div>
     <div class="hero-text fade-in">
+        <meta itemprop="sku" content="MLB4229498">
+        <meta itemprop="mpn" content="MLB4229498">
+        <div itemprop="brand" itemscope itemtype="https://schema.org/Brand" style="display:none">
+            <meta itemprop="name" content="Growth Supplements">
+        </div>
         <div class="hero-badge">
             <span class="dot"></span>
             Verificado hoje — <span id="hero-date">27 Mar 2026</span>
