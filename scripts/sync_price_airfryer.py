@@ -74,7 +74,14 @@ def update_html(price: int) -> bool:
         html,
     )
 
-    # 6. Recalculate competitor % differences
+    # 6. JSON-LD structured data price
+    html = re.sub(
+        r'("price":\s*")\d+\.\d+(")',
+        rf'\g<1>{price}.00\2',
+        html,
+    )
+
+    # 7. Recalculate competitor % differences
     known_competitors = [399, 359, 420, 389]
     for comp in known_competitors:
         if comp > price:
