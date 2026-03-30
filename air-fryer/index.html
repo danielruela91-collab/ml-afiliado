@@ -107,22 +107,23 @@
         .hero {
             max-width: 900px;
             margin: 0 auto;
-            padding: 48px 20px 0;
+            padding: 40px 20px 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
+            grid-template-rows: auto 1fr;
+            column-gap: 48px;
+            row-gap: 20px;
+            align-items: start;
         }
 
         @media (max-width: 640px) {
-            .hero { grid-template-columns: 1fr; padding: 32px 16px 0; gap: 16px; }
-            .hero-img { order: -1; max-width: 200px; margin: 0 auto; }
+            .hero { grid-template-columns: 1fr; padding: 28px 16px 0; row-gap: 16px; column-gap: 0; }
+            .hero-img { order: 2; max-width: 200px; margin: 0 auto; }
         }
-
-        .hero-text {}
 
         /* TRENDING BLOCK */
         .trending-block {
+            grid-column: 1 / -1;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -131,7 +132,7 @@
             border-left: 3px solid #22c55e;
             border-radius: 10px;
             padding: 13px 16px;
-            margin-bottom: 22px;
+            margin-bottom: 0;
         }
 
         .trend-fire {
@@ -842,22 +843,23 @@
 
 <!-- HERO -->
 <section class="hero" itemscope itemtype="https://schema.org/Product">
+    <div class="trending-block">
+        <span class="trend-fire">🔥</span>
+        <div class="trend-main">
+            <div class="trend-label">Trending agora · <span id="hero-date">28 Mar 2026</span></div>
+            <span class="trend-text">#1 mais vendida em Air Fryer no Mercado Livre</span>
+        </div>
+        <div class="trend-counter">
+            <div class="flip-counter" id="sales-count"></div>
+            <span class="trend-unit">vendas hoje</span>
+        </div>
+    </div>
+
     <div class="hero-text fade-in">
         <meta itemprop="sku" content="MLB39292059">
         <meta itemprop="mpn" content="MLB39292059">
         <div itemprop="brand" itemscope itemtype="https://schema.org/Brand" style="display:none">
             <meta itemprop="name" content="Philips Walita">
-        </div>
-        <div class="trending-block">
-            <span class="trend-fire">🔥</span>
-            <div class="trend-main">
-                <div class="trend-label">Trending agora · <span id="hero-date">28 Mar 2026</span></div>
-                <span class="trend-text">#1 mais vendida em Air Fryer no Mercado Livre</span>
-            </div>
-            <div class="trend-counter">
-                <div class="flip-counter" id="sales-count"></div>
-                <span class="trend-unit">vendas hoje</span>
-            </div>
         </div>
         <h1 itemprop="name">Air Fryer Philips Walita<br><em>Serie 1000 XL</em><br>6,2L</h1>
         <p class="hero-sub" itemprop="description">1700W · Tecnologia RapidAir · 90% menos gordura<br>Na loja oficial sai R$499. Achei <strong>R$329 no ML</strong>.</p>
