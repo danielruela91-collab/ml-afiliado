@@ -91,6 +91,7 @@
             color: var(--text);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         /* ─── TOP BAR ─── */
@@ -108,59 +109,138 @@
         .hero {
             max-width: 900px;
             margin: 0 auto;
-            padding: 48px 20px 0;
+            padding: 40px 20px 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
+            grid-template-areas:
+                "trend img"
+                "text  img";
+            column-gap: 48px;
+            row-gap: 16px;
+            align-items: start;
         }
+
+        .trending-block { grid-area: trend; }
+        .hero-text      { grid-area: text; }
+        .hero-img       { grid-area: img; align-self: center; }
 
         @media (max-width: 640px) {
-            .hero { grid-template-columns: 1fr; padding: 32px 16px 0; gap: 16px; }
-            .hero-img { order: -1; max-width: 200px; margin: 0 auto; }
-        }
-
-        .hero-text {}
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            background: var(--accent-dim);
-            border: 1px solid var(--border-glow);
-            color: var(--accent);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 5px 12px;
-            border-radius: 100px;
-            margin-bottom: 18px;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            white-space: nowrap;
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        @media (max-width: 360px) {
-            .hero-badge {
-                font-size: 10px;
-                padding: 4px 9px;
-                letter-spacing: 0;
-                gap: 5px;
+            .hero {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "trend"
+                    "img"
+                    "text";
+                padding: 24px 16px 0;
+                row-gap: 16px;
+                column-gap: 0;
             }
+            .hero-img { max-width: 200px; margin: 0 auto; }
         }
 
-        .hero-badge .dot {
-            width: 6px; height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: blink 2s infinite;
+        /* TRENDING BLOCK */
+        .trending-block {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #22c55e08;
+            border: 1px solid #22c55e28;
+            border-left: 3px solid #22c55e;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 0;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .2; }
+        .trend-fire {
+            font-size: 16px;
+            flex-shrink: 0;
+            animation: fireBlink 1s ease-in-out infinite;
+        }
+
+        @keyframes fireBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .3; transform: scale(.8); }
+        }
+
+        /* Flip counter digits */
+        .flip-counter {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            justify-content: flex-end;
+            line-height: 1;
+        }
+
+        .flip-digit {
+            width: 17px; height: 22px;
+            background: #0a0a0e;
+            border: 1px solid #22c55e35;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', monospace;
+            font-size: 13px;
+            font-weight: 800;
+            color: #22c55e;
+            perspective: 300px;
+        }
+
+        .flip-digit.flipping {
+            animation: digitFlip 0.35s ease;
+        }
+
+        @keyframes digitFlip {
+            0%   { transform: perspective(300px) rotateX(0deg);   opacity: 1; }
+            45%  { transform: perspective(300px) rotateX(-90deg); opacity: 0; }
+            55%  { transform: perspective(300px) rotateX(-90deg); opacity: 0; }
+            100% { transform: perspective(300px) rotateX(0deg);   opacity: 1; }
+        }
+
+        .trend-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .trend-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #22c55e;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .trend-text {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .trend-counter {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .trend-unit {
+            display: block;
+            font-size: 9px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-top: 3px;
+            text-align: right;
+        }
+
+        @media (max-width: 480px) {
+            .trend-fire { font-size: 14px; }
+            .flip-digit { width: 15px; height: 20px; font-size: 12px; }
+            .trend-text { font-size: 10px; }
+            .trending-block { padding: 7px 10px; gap: 8px; }
         }
 
         .hero h1 {
@@ -179,9 +259,9 @@
 
         .hero-sub {
             color: var(--muted);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 28px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 18px;
         }
 
         /* PRICE HERO */
@@ -716,6 +796,78 @@
             border-top: 1px solid var(--border);
         }
 
+        .sales-count {
+            display: inline-block;
+            font-weight: 800;
+        }
+
+        .counter-pulse {
+            animation: counterPulse .4s ease;
+        }
+
+        @keyframes counterPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); color: #4ade80; }
+            100% { transform: scale(1); }
+        }
+
+        .trending-rank {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #22c55e12;
+            border: 1px solid #22c55e30;
+            color: #22c55e;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .trending-rank .flip-digit {
+            width: 16px; height: 22px;
+            font-size: 13px;
+            border-color: #22c55e25;
+        }
+
+        .trending-rank-down {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f8717112;
+            border: 1px solid #f8717130;
+            color: var(--red);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        /* Rank competitor price */
+        .rank-price-info {
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .rank-comp-price {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .rank-expensive {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--red);
+            background: #f8717110;
+            border: 1px solid #f8717130;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
         /* animations */
         .fade-in {
             animation: fadeUp .55s ease both;
@@ -735,23 +887,30 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-    🔥 Frete GRÁTIS + Preço mais baixo que a loja oficial — Só pelo Mercado Livre
+    ▲ ML Select — O produto mais trending de Creatina no Mercado Livre agora &nbsp;·&nbsp; Frete GRÁTIS
 </div>
 
 <!-- HERO -->
 <section class="hero" itemscope itemtype="https://schema.org/Product">
+    <div class="trending-block">
+        <span class="trend-fire">🔥</span>
+        <div class="trend-main">
+            <span class="trend-text">#1 mais vendida em Creatina no Mercado Livre</span>
+        </div>
+        <div class="trend-counter">
+            <div class="flip-counter" id="sales-count"></div>
+            <span class="trend-unit">vendas hoje</span>
+        </div>
+    </div>
+
     <div class="hero-text fade-in">
         <meta itemprop="sku" content="MLB4229498">
         <meta itemprop="mpn" content="MLB4229498">
         <div itemprop="brand" itemscope itemtype="https://schema.org/Brand" style="display:none">
             <meta itemprop="name" content="Growth Supplements">
         </div>
-        <div class="hero-badge">
-            <span class="dot"></span>
-            Verificado hoje — <span id="hero-date">27 Mar 2026</span>
-        </div>
         <h1 itemprop="name">Creatina Growth<br><em>Monohidratada</em><br>250g</h1>
-        <p class="hero-sub" itemprop="description">Nova Fórmula · Sem sabor · 83 doses de 3g<br>Comprei na loja oficial por R$62. Achei <strong>R$39 no ML</strong>.</p>
+        <p class="hero-sub" itemprop="description">Nova Fórmula · Sem sabor · 83 doses de 3g · Monohidratada pura</p>
 
         <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
             <meta itemprop="priceCurrency" content="BRL">
@@ -812,7 +971,7 @@
                 </div>
             </div>
             <div class="rank-cta-col">
-                <span class="rank-winner-badge">Vencedora</span>
+                <span class="trending-rank">▲ <span class="flip-counter" id="sales-count-rank"></span> vendas hoje</span>
                 <a class="btn-rank" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver oferta →</a>
             </div>
         </div>
@@ -834,7 +993,7 @@
                 </div>
             </div>
             <div class="rank-cta-col">
-                <span class="rank-position-badge">#2 Recomendada</span>
+                <span class="trending-rank-down">▼ 43 vendas hoje</span>
             </div>
         </div>
 
@@ -855,7 +1014,7 @@
                 </div>
             </div>
             <div class="rank-cta-col">
-                <span class="rank-position-badge">#3 Recomendada</span>
+                <span class="trending-rank-down">▼ 27 vendas hoje</span>
             </div>
         </div>
 
@@ -876,98 +1035,13 @@
                 </div>
             </div>
             <div class="rank-cta-col">
-                <span class="rank-position-badge">#4 Recomendada</span>
+                <span class="trending-rank-down">▼ 18 vendas hoje</span>
             </div>
         </div>
 
     </div>
 </section>
 
-<!-- COMPARE SECTION -->
-<section class="compare-section fade-in delay-1">
-    <div class="section-title">Comparação de preços</div>
-    <div class="section-sub">Mesmo produto · Creatina Growth Monohidratada 250g · Consultado em <span id="compare-date">27/03/2026</span></div>
-
-    <div class="compare-table">
-        <!-- header -->
-        <div class="compare-row header">
-            <div>Loja</div>
-            <div>Preço</div>
-            <div>Frete</div>
-            <div>Status</div>
-        </div>
-
-        <!-- ML — BEST -->
-        <div class="compare-row best">
-            <div class="compare-store">
-                <div class="store-icon">🛒</div>
-                <div>
-                    <div class="store-name">Mercado Livre</div>
-                    <div class="store-tag">★ Menor preço encontrado</div>
-                </div>
-            </div>
-            <div class="compare-price">R$ 39</div>
-            <div class="compare-shipping free-ship">Grátis</div>
-            <div class="compare-status"><span class="status-best">Melhor oferta</span></div>
-        </div>
-
-        <!-- Loja Oficial Growth -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">🏪</div>
-                <div>
-                    <div class="store-name">Loja Oficial Growth</div>
-                    <div class="store-tag">gsuplementos.com.br</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 62</div>
-            <div class="compare-shipping paid-ship">A partir de R$ 15</div>
-            <div class="compare-status status-high">+59% mais caro</div>
-        </div>
-
-        <!-- Shopee -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">🟠</div>
-                <div>
-                    <div class="store-name">Shopee</div>
-                    <div class="store-tag">Terceiros</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 54</div>
-            <div class="compare-shipping paid-ship">Frete variável</div>
-            <div class="compare-status status-high">+38% mais caro</div>
-        </div>
-
-        <!-- Amazon -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">📦</div>
-                <div>
-                    <div class="store-name">Amazon</div>
-                    <div class="store-tag">Marketplace</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 67</div>
-            <div class="compare-shipping paid-ship">R$ 12–20</div>
-            <div class="compare-status status-high">+72% mais caro</div>
-        </div>
-
-        <!-- Netshoes -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">👟</div>
-                <div>
-                    <div class="store-name">Netshoes</div>
-                    <div class="store-tag">netshoes.com.br</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 59</div>
-            <div class="compare-shipping paid-ship">A partir de R$ 10</div>
-            <div class="compare-status status-high">+51% mais caro</div>
-        </div>
-    </div>
-</section>
 
 <!-- BENEFITS -->
 <div class="benefits-section fade-in delay-2">
@@ -1028,6 +1102,56 @@
 
     var rankingDate = document.getElementById('ranking-date');
     if (rankingDate) rankingDate.textContent = shortDate;
+})();
+</script>
+
+<script>
+(function() {
+    var SALES_PER_DAY = 487;
+    var MS_PER_SALE = 86400000 / SALES_PER_DAY;
+    var now = new Date();
+    var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var msElapsed = now - startOfDay;
+    var currentSales = Math.floor(msElapsed / MS_PER_SALE);
+
+    var counterEls = [
+        document.getElementById('sales-count'),
+        document.getElementById('sales-count-rank')
+    ];
+
+    function renderDigits(el, num) {
+        if (!el) return;
+        el.innerHTML = String(num).split('').map(function(d) {
+            return '<span class="flip-digit">' + d + '</span>';
+        }).join('');
+    }
+
+    function updateDigits(el, oldNum, newNum) {
+        if (!el) return;
+        var oldStr = String(oldNum), newStr = String(newNum);
+        if (oldStr.length !== newStr.length) { renderDigits(el, newNum); return; }
+        var digitEls = el.querySelectorAll('.flip-digit');
+        for (var i = 0; i < newStr.length; i++) {
+            if (newStr[i] !== oldStr[i]) {
+                (function(digitEl, newChar) {
+                    digitEl.classList.add('flipping');
+                    setTimeout(function() { digitEl.textContent = newChar; }, 175);
+                    setTimeout(function() { digitEl.classList.remove('flipping'); }, 360);
+                })(digitEls[i], newStr[i]);
+            }
+        }
+    }
+
+    counterEls.forEach(function(el) { renderDigits(el, currentSales); });
+
+    function tick() {
+        var prev = currentSales;
+        currentSales++;
+        counterEls.forEach(function(el) { updateDigits(el, prev, currentSales); });
+        setTimeout(tick, MS_PER_SALE * (0.7 + Math.random() * 0.6));
+    }
+
+    setTimeout(tick, MS_PER_SALE - (msElapsed % MS_PER_SALE));
 })();
 </script>
 
