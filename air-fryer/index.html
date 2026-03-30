@@ -134,8 +134,56 @@
             margin-bottom: 22px;
         }
 
-        .trend-spark {
+        /* Stock icon */
+        .trend-icon {
+            width: 46px; height: 46px;
+            background: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { box-shadow: 0 0 0 0 #22c55e55; transform: scale(1); }
+            50% { box-shadow: 0 0 0 5px transparent; transform: scale(1.06); }
+        }
+
+        /* Flip counter digits */
+        .flip-counter {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            justify-content: flex-end;
+            line-height: 1;
+        }
+
+        .flip-digit {
+            width: 22px; height: 30px;
+            background: #0a0a0e;
+            border: 1px solid #22c55e35;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', monospace;
+            font-size: 17px;
+            font-weight: 800;
+            color: #22c55e;
+            perspective: 300px;
+        }
+
+        .flip-digit.flipping {
+            animation: digitFlip 0.35s ease;
+        }
+
+        @keyframes digitFlip {
+            0%   { transform: perspective(300px) rotateX(0deg);   opacity: 1; }
+            45%  { transform: perspective(300px) rotateX(-90deg); opacity: 0; }
+            55%  { transform: perspective(300px) rotateX(-90deg); opacity: 0; }
+            100% { transform: perspective(300px) rotateX(0deg);   opacity: 1; }
         }
 
         .trend-main {
@@ -183,28 +231,20 @@
             flex-shrink: 0;
         }
 
-        .trend-counter .sales-count {
-            display: block;
-            font-size: 24px;
-            font-weight: 800;
-            color: #22c55e;
-            line-height: 1;
-            letter-spacing: -1px;
-        }
-
         .trend-unit {
             display: block;
             font-size: 10px;
             color: var(--muted);
             text-transform: uppercase;
             letter-spacing: .5px;
-            margin-top: 2px;
+            margin-top: 5px;
             white-space: nowrap;
+            text-align: right;
         }
 
         @media (max-width: 480px) {
-            .trend-spark { display: none; }
-            .trend-counter .sales-count { font-size: 20px; }
+            .trend-icon { display: none; }
+            .flip-digit { width: 19px; height: 26px; font-size: 15px; }
             .trend-text { font-size: 12px; }
             .trending-block { padding: 11px 13px; gap: 10px; }
         }
@@ -791,6 +831,12 @@
             white-space: nowrap;
         }
 
+        .trending-rank .flip-digit {
+            width: 16px; height: 22px;
+            font-size: 13px;
+            border-color: #22c55e25;
+        }
+
         /* animations */
         .fade-in {
             animation: fadeUp .55s ease both;
@@ -822,11 +868,12 @@
             <meta itemprop="name" content="Philips Walita">
         </div>
         <div class="trending-block">
-            <svg class="trend-spark" viewBox="0 0 52 22" width="52" height="22" fill="none">
-                <polyline points="2,19 10,14 18,16 28,8 36,6 44,3 50,1"
-                          stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="50" cy="1" r="2.5" fill="#22c55e"/>
-            </svg>
+            <div class="trend-icon">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none">
+                    <path d="M2 18 L7 11 L11 15 L17 5" stroke="#22c55e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <polyline points="14,3 18,5 16,9" stroke="#22c55e" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
             <div class="trend-main">
                 <div class="trend-label">
                     <span class="trend-dot"></span>
@@ -835,7 +882,7 @@
                 <span class="trend-text">#1 mais vendida em Air Fryer no Mercado Livre</span>
             </div>
             <div class="trend-counter">
-                <span class="sales-count" id="sales-count">0</span>
+                <div class="flip-counter" id="sales-count"></div>
                 <span class="trend-unit">vendas hoje</span>
             </div>
         </div>
@@ -902,7 +949,7 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-winner-badge">Vencedora</span>
-                <span class="trending-rank">▲ <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>
+                <span class="trending-rank">▲ <span class="flip-counter" id="sales-count-rank"></span> vendas hoje</span>
                 <a class="btn-rank" href="https://meli.la/2XpR4wi" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver oferta →</a>
             </div>
         </div>
@@ -1130,24 +1177,44 @@
     var msElapsed = now - startOfDay;
     var currentSales = Math.floor(msElapsed / MS_PER_SALE);
 
-    var els = [document.getElementById('sales-count'), document.getElementById('sales-count-rank')];
-    els.forEach(function(el) { if (el) el.textContent = currentSales; });
+    var counterEls = [
+        document.getElementById('sales-count'),
+        document.getElementById('sales-count-rank')
+    ];
 
-    function tick() {
-        currentSales++;
-        els.forEach(function(el) {
-            if (el) {
-                el.textContent = currentSales;
-                el.classList.add('counter-pulse');
-                setTimeout(function() { el.classList.remove('counter-pulse'); }, 500);
-            }
-        });
-        var next = MS_PER_SALE * (0.7 + Math.random() * 0.6);
-        setTimeout(tick, next);
+    function renderDigits(el, num) {
+        if (!el) return;
+        el.innerHTML = String(num).split('').map(function(d) {
+            return '<span class="flip-digit">' + d + '</span>';
+        }).join('');
     }
 
-    var msToNext = MS_PER_SALE - (msElapsed % MS_PER_SALE);
-    setTimeout(tick, msToNext);
+    function updateDigits(el, oldNum, newNum) {
+        if (!el) return;
+        var oldStr = String(oldNum), newStr = String(newNum);
+        if (oldStr.length !== newStr.length) { renderDigits(el, newNum); return; }
+        var digitEls = el.querySelectorAll('.flip-digit');
+        for (var i = 0; i < newStr.length; i++) {
+            if (newStr[i] !== oldStr[i]) {
+                (function(digitEl, newChar) {
+                    digitEl.classList.add('flipping');
+                    setTimeout(function() { digitEl.textContent = newChar; }, 175);
+                    setTimeout(function() { digitEl.classList.remove('flipping'); }, 360);
+                })(digitEls[i], newStr[i]);
+            }
+        }
+    }
+
+    counterEls.forEach(function(el) { renderDigits(el, currentSales); });
+
+    function tick() {
+        var prev = currentSales;
+        currentSales++;
+        counterEls.forEach(function(el) { updateDigits(el, prev, currentSales); });
+        setTimeout(tick, MS_PER_SALE * (0.7 + Math.random() * 0.6));
+    }
+
+    setTimeout(tick, MS_PER_SALE - (msElapsed % MS_PER_SALE));
 })();
 </script>
 
