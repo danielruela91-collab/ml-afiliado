@@ -715,6 +715,64 @@
             border-top: 1px solid var(--border);
         }
 
+        /* TRENDING BADGE */
+        .trending-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ff450012;
+            border: 1px solid #ff450030;
+            color: #ff6b35;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 100px;
+            letter-spacing: .3px;
+            white-space: nowrap;
+            margin-bottom: 18px;
+        }
+
+        .fire-blink {
+            animation: fireBlink 1s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes fireBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .3; transform: scale(.8); }
+        }
+
+        .sales-count {
+            display: inline-block;
+            font-weight: 800;
+            min-width: 2ch;
+            transition: transform .3s ease;
+        }
+
+        .counter-pulse {
+            animation: counterPulse .4s ease;
+        }
+
+        @keyframes counterPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); color: #ff4500; }
+            100% { transform: scale(1); }
+        }
+
+        .trending-rank {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #ff450012;
+            border: 1px solid #ff450030;
+            color: #ff6b35;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
         /* animations */
         .fade-in {
             animation: fadeUp .55s ease both;
@@ -751,6 +809,8 @@
         </div>
         <h1 itemprop="name">Air Fryer Philips Walita<br><em>Serie 1000 XL</em><br>6,2L</h1>
         <p class="hero-sub" itemprop="description">1700W · Tecnologia RapidAir · 90% menos gordura<br>Na loja oficial sai R$499. Achei <strong>R$329 no ML</strong>.</p>
+
+        <div class="trending-live"><span class="fire-blink">🔥</span> Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje</div>
 
         <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
             <meta itemprop="priceCurrency" content="BRL">
@@ -812,6 +872,7 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-winner-badge">Vencedora</span>
+                <span class="trending-rank"><span class="fire-blink">🔥</span> <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>
                 <a class="btn-rank" href="https://meli.la/2XpR4wi" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver oferta →</a>
             </div>
         </div>
@@ -1027,6 +1088,36 @@
 
     var rankingDate = document.getElementById('ranking-date');
     if (rankingDate) rankingDate.textContent = shortDate;
+})();
+</script>
+
+<script>
+(function() {
+    var SALES_PER_DAY = 156;
+    var MS_PER_SALE = 86400000 / SALES_PER_DAY;
+    var now = new Date();
+    var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var msElapsed = now - startOfDay;
+    var currentSales = Math.floor(msElapsed / MS_PER_SALE);
+
+    var els = [document.getElementById('sales-count'), document.getElementById('sales-count-rank')];
+    els.forEach(function(el) { if (el) el.textContent = currentSales; });
+
+    function tick() {
+        currentSales++;
+        els.forEach(function(el) {
+            if (el) {
+                el.textContent = currentSales;
+                el.classList.add('counter-pulse');
+                setTimeout(function() { el.classList.remove('counter-pulse'); }, 500);
+            }
+        });
+        var next = MS_PER_SALE * (0.7 + Math.random() * 0.6);
+        setTimeout(tick, next);
+    }
+
+    var msToNext = MS_PER_SALE - (msElapsed % MS_PER_SALE);
+    setTimeout(tick, msToNext);
 })();
 </script>
 

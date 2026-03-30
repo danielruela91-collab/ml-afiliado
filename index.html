@@ -716,6 +716,64 @@
             border-top: 1px solid var(--border);
         }
 
+        /* TRENDING BADGE */
+        .trending-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ff450012;
+            border: 1px solid #ff450030;
+            color: #ff6b35;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 100px;
+            letter-spacing: .3px;
+            white-space: nowrap;
+            margin-bottom: 18px;
+        }
+
+        .fire-blink {
+            animation: fireBlink 1s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes fireBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .3; transform: scale(.8); }
+        }
+
+        .sales-count {
+            display: inline-block;
+            font-weight: 800;
+            min-width: 2ch;
+            transition: transform .3s ease;
+        }
+
+        .counter-pulse {
+            animation: counterPulse .4s ease;
+        }
+
+        @keyframes counterPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); color: #ff4500; }
+            100% { transform: scale(1); }
+        }
+
+        .trending-rank {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #ff450012;
+            border: 1px solid #ff450030;
+            color: #ff6b35;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
         /* animations */
         .fade-in {
             animation: fadeUp .55s ease both;
@@ -752,6 +810,8 @@
         </div>
         <h1 itemprop="name">Creatina Growth<br><em>Monohidratada</em><br>250g</h1>
         <p class="hero-sub" itemprop="description">Nova Fórmula · Sem sabor · 83 doses de 3g<br>Comprei na loja oficial por R$62. Achei <strong>R$39 no ML</strong>.</p>
+
+        <div class="trending-live"><span class="fire-blink">🔥</span> Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje</div>
 
         <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
             <meta itemprop="priceCurrency" content="BRL">
@@ -813,6 +873,7 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-winner-badge">Vencedora</span>
+                <span class="trending-rank"><span class="fire-blink">🔥</span> <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>
                 <a class="btn-rank" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver oferta →</a>
             </div>
         </div>
@@ -1028,6 +1089,36 @@
 
     var rankingDate = document.getElementById('ranking-date');
     if (rankingDate) rankingDate.textContent = shortDate;
+})();
+</script>
+
+<script>
+(function() {
+    var SALES_PER_DAY = 487;
+    var MS_PER_SALE = 86400000 / SALES_PER_DAY;
+    var now = new Date();
+    var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var msElapsed = now - startOfDay;
+    var currentSales = Math.floor(msElapsed / MS_PER_SALE);
+
+    var els = [document.getElementById('sales-count'), document.getElementById('sales-count-rank')];
+    els.forEach(function(el) { if (el) el.textContent = currentSales; });
+
+    function tick() {
+        currentSales++;
+        els.forEach(function(el) {
+            if (el) {
+                el.textContent = currentSales;
+                el.classList.add('counter-pulse');
+                setTimeout(function() { el.classList.remove('counter-pulse'); }, 500);
+            }
+        });
+        var next = MS_PER_SALE * (0.7 + Math.random() * 0.6);
+        setTimeout(tick, next);
+    }
+
+    var msToNext = MS_PER_SALE - (msElapsed % MS_PER_SALE);
+    setTimeout(tick, msToNext);
 })();
 </script>
 

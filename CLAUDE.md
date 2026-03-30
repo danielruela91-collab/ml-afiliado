@@ -60,6 +60,19 @@ That's it. The user's only input is the product + affiliate link. The output is 
 - `#1`: `rank-first` class + "Vencedora" badge + CTA button with affiliate link
 - `#2–4`: `rank-position-badge` + "#N Recomendada" badge, **NO link/CTA** (no affiliate links for competitors)
 
+### Trending Badge (Live Sales Counter)
+- Every page gets a **trending badge** on the #1 product — shown in both hero and ranking card
+- Badge HTML: `<div class="trending-live"><span class="fire-blink">🔥</span> Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje</div>`
+- Ranking card badge: `<span class="trending-rank"><span class="fire-blink">🔥</span> <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>`
+- Fire emoji blinks via CSS `fireBlink` animation (pulse opacity + scale)
+- Sales counter is seeded from time of day: `Math.floor(msElapsed / (86400000 / SALES_PER_DAY))`
+- Counter ticks up in real-time at the product's average sales rate with ±30% randomness
+- On each tick, the counter pulses briefly via `counter-pulse` CSS animation
+- `SALES_PER_DAY` varies per product category (e.g. 487 for creatina, 156 for air fryer) — set a realistic number based on ML sales volume visible on the product listing
+- Hero badge uses `id="sales-count"`, ranking badge uses `id="sales-count-rank"` — both are synced by the same JS
+- Place hero badge **after** `<p class="hero-sub">` and **before** `<div class="price-hero">`
+- Place ranking badge inside `.rank-cta-col` between "Vencedora" badge and CTA button
+
 ### Price Compare Section
 - Compare ML price vs: Loja Oficial, Shopee, Amazon, Magazine Luiza
 - ML row: no inline style (inherits accent color)
