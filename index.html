@@ -122,41 +122,92 @@
 
         .hero-text {}
 
-        .hero-badge {
-            display: inline-flex;
+        /* TRENDING BLOCK */
+        .trending-block {
+            display: flex;
             align-items: center;
-            gap: 7px;
-            background: #ff450012;
-            border: 1px solid #ff450035;
-            color: #ff6b35;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 7px 14px;
-            border-radius: 100px;
-            margin-bottom: 18px;
-            letter-spacing: .3px;
+            gap: 14px;
+            background: #22c55e08;
+            border: 1px solid #22c55e28;
+            border-left: 3px solid #22c55e;
+            border-radius: 10px;
+            padding: 13px 16px;
+            margin-bottom: 22px;
+        }
+
+        .trend-spark {
+            flex-shrink: 0;
+        }
+
+        .trend-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .trend-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #22c55e;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .trend-dot {
+            width: 6px; height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: trendPulse 1.4s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes trendPulse {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 #22c55e55; }
+            50% { opacity: .7; transform: scale(1.3); box-shadow: 0 0 0 4px transparent; }
+        }
+
+        .trend-text {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
             white-space: nowrap;
-            max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .badge-sep {
-            color: #ff6b3550;
+        .trend-counter {
+            text-align: right;
+            flex-shrink: 0;
         }
 
-        .hero-badge .sales-count {
+        .trend-counter .sales-count {
+            display: block;
+            font-size: 24px;
             font-weight: 800;
+            color: #22c55e;
+            line-height: 1;
+            letter-spacing: -1px;
         }
 
-        @media (max-width: 420px) {
-            .hero-badge {
-                font-size: 10px;
-                padding: 5px 10px;
-                gap: 5px;
-                letter-spacing: 0;
-            }
-            .badge-sep, .badge-sep ~ span { display: none; }
+        .trend-unit {
+            display: block;
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .trend-spark { display: none; }
+            .trend-counter .sales-count { font-size: 20px; }
+            .trend-text { font-size: 12px; }
+            .trending-block { padding: 11px 13px; gap: 10px; }
         }
 
         .hero h1 {
@@ -712,22 +763,9 @@
             border-top: 1px solid var(--border);
         }
 
-        /* TRENDING BADGE */
-        .fire-blink {
-            animation: fireBlink 1s ease-in-out infinite;
-            display: inline-block;
-        }
-
-        @keyframes fireBlink {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: .3; transform: scale(.8); }
-        }
-
         .sales-count {
             display: inline-block;
             font-weight: 800;
-            min-width: 2ch;
-            transition: transform .3s ease;
         }
 
         .counter-pulse {
@@ -736,7 +774,7 @@
 
         @keyframes counterPulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.2); color: #ff4500; }
+            50% { transform: scale(1.15); color: #4ade80; }
             100% { transform: scale(1); }
         }
 
@@ -744,9 +782,9 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            background: #ff450012;
-            border: 1px solid #ff450030;
-            color: #ff6b35;
+            background: #22c55e12;
+            border: 1px solid #22c55e30;
+            color: #22c55e;
             font-size: 11px;
             font-weight: 700;
             padding: 4px 10px;
@@ -773,7 +811,7 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-    🔥 Frete GRÁTIS + Preço mais baixo que a loja oficial — Só pelo Mercado Livre
+    ▲ ML Select — O produto mais trending de Creatina no Mercado Livre agora &nbsp;·&nbsp; Frete GRÁTIS
 </div>
 
 <!-- HERO -->
@@ -784,11 +822,23 @@
         <div itemprop="brand" itemscope itemtype="https://schema.org/Brand" style="display:none">
             <meta itemprop="name" content="Growth Supplements">
         </div>
-        <div class="hero-badge">
-            <span class="fire-blink">🔥</span>
-            Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje
-            <span class="badge-sep">·</span>
-            <span id="hero-date">27 Mar 2026</span>
+        <div class="trending-block">
+            <svg class="trend-spark" viewBox="0 0 52 22" width="52" height="22" fill="none">
+                <polyline points="2,19 10,14 18,16 28,8 36,6 44,3 50,1"
+                          stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="50" cy="1" r="2.5" fill="#22c55e"/>
+            </svg>
+            <div class="trend-main">
+                <div class="trend-label">
+                    <span class="trend-dot"></span>
+                    ▲ Trending agora · <span id="hero-date">27 Mar 2026</span>
+                </div>
+                <span class="trend-text">#1 mais vendida em Creatina no Mercado Livre</span>
+            </div>
+            <div class="trend-counter">
+                <span class="sales-count" id="sales-count">0</span>
+                <span class="trend-unit">vendas hoje</span>
+            </div>
         </div>
         <h1 itemprop="name">Creatina Growth<br><em>Monohidratada</em><br>250g</h1>
         <p class="hero-sub" itemprop="description">Nova Fórmula · Sem sabor · 83 doses de 3g<br>Comprei na loja oficial por R$62. Achei <strong>R$39 no ML</strong>.</p>
@@ -853,7 +903,7 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-winner-badge">Vencedora</span>
-                <span class="trending-rank"><span class="fire-blink">🔥</span> <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>
+                <span class="trending-rank">▲ <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>
                 <a class="btn-rank" href="https://www.mercadolivre.com.br/social/ruda3415334?matt_word=ruda3415334&matt_tool=56317803&forceInApp=true&ref=BAJDTf4aax0PoVec9juMn38j1OurVTUUoqCjTGsxAvoZaMwUt%2Bw4mfIOjWaivl89vWAxuiQci2TWIc%2Bt2dwqley646tLiB0Rg69JLzeg%2FU8d5hbD1clVKSxoeJ9bAatZFzjAaH7064Obxid8sO859gL3LARDuWuyMjkaG6We7udPI6KbjTi6sI1IS05AF1dX01%2BKU1U%3D" target="_blank" rel="noopener sponsored" onclick="gtag_report_conversion()">Ver oferta →</a>
             </div>
         </div>

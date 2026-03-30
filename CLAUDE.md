@@ -60,18 +60,35 @@ That's it. The user's only input is the product + affiliate link. The output is 
 - `#1`: `rank-first` class + "Vencedora" badge + CTA button with affiliate link
 - `#2–4`: `rank-position-badge` + "#N Recomendada" badge, **NO link/CTA** (no affiliate links for competitors)
 
-### Trending Badge (Live Sales Counter)
-- Every page gets a **trending badge** on the #1 product — shown in both hero and ranking card
-- Hero badge is the **unified top badge** combining trending + date: `<div class="hero-badge"><span class="fire-blink">🔥</span> Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje <span class="badge-sep">·</span> <span id="hero-date">...</span></div>`
-- Ranking card badge: `<span class="trending-rank"><span class="fire-blink">🔥</span> <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>`
-- Fire emoji blinks via CSS `fireBlink` animation (pulse opacity + scale)
-- Sales counter is seeded from time of day: `Math.floor(msElapsed / (86400000 / SALES_PER_DAY))`
-- Counter ticks up in real-time at the product's average sales rate with ±30% randomness
-- On each tick, the counter pulses briefly via `counter-pulse` CSS animation
-- `SALES_PER_DAY` varies per product category (e.g. 487 for creatina, 156 for air fryer) — set a realistic number based on ML sales volume visible on the product listing
-- Hero badge uses `id="sales-count"`, ranking badge uses `id="sales-count-rank"` — both are synced by the same JS
-- Hero badge is placed **before** `<h1>` as the first visible element in `.hero-text`
-- On small screens (≤420px), the date portion hides to keep the badge compact
+### Trending Block (Live Sales Counter — Stock Style)
+- The site concept is **"most trending product in a category RIGHT NOW on Mercado Livre"** — every page reinforces this
+- Topbar text: `▲ ML Select — O produto mais trending de {Categoria} no Mercado Livre agora · Frete GRÁTIS`
+- Hero gets a prominent **green stock-style trending block** (`.trending-block`) — full-width card with green left-border, SVG sparkline, pulsing dot, live counter
+- Trending block structure:
+  ```html
+  <div class="trending-block">
+      <svg class="trend-spark" viewBox="0 0 52 22" width="52" height="22" fill="none">
+          <polyline points="2,19 10,14 18,16 28,8 36,6 44,3 50,1" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="50" cy="1" r="2.5" fill="#22c55e"/>
+      </svg>
+      <div class="trend-main">
+          <div class="trend-label"><span class="trend-dot"></span> ▲ Trending agora · <span id="hero-date">...</span></div>
+          <span class="trend-text">#1 mais vendida em {Categoria} no Mercado Livre</span>
+      </div>
+      <div class="trend-counter">
+          <span class="sales-count" id="sales-count">0</span>
+          <span class="trend-unit">vendas hoje</span>
+      </div>
+  </div>
+  ```
+- `.trend-dot` pulses via `trendPulse` animation (green, breathing glow)
+- Sparkline is a static SVG going up-and-to-the-right with a filled endpoint dot
+- Ranking card badge: `<span class="trending-rank">▲ <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>` (green)
+- Sales counter seeded from time of day: `Math.floor(msElapsed / (86400000 / SALES_PER_DAY))`
+- Counter ticks up in real-time at the product's sales rate with ±30% randomness; pulses via `counter-pulse`
+- `SALES_PER_DAY` per category (e.g. 487 creatina, 156 air fryer) — pick a realistic number
+- Hero block placed **before** `<h1>` as first visible element in `.hero-text`
+- On mobile (≤480px) sparkline hides; counter stays prominent
 - Place ranking badge inside `.rank-cta-col` between "Vencedora" badge and CTA button
 
 ### Price Compare Section
