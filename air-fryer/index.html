@@ -125,41 +125,37 @@
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            background: var(--accent-dim);
-            border: 1px solid var(--border-glow);
-            color: var(--accent);
+            background: #ff450012;
+            border: 1px solid #ff450035;
+            color: #ff6b35;
             font-size: 12px;
-            font-weight: 600;
-            padding: 5px 12px;
+            font-weight: 700;
+            padding: 7px 14px;
             border-radius: 100px;
             margin-bottom: 18px;
-            letter-spacing: .5px;
-            text-transform: uppercase;
+            letter-spacing: .3px;
             white-space: nowrap;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        @media (max-width: 360px) {
+        .badge-sep {
+            color: #ff6b3550;
+        }
+
+        .hero-badge .sales-count {
+            font-weight: 800;
+        }
+
+        @media (max-width: 420px) {
             .hero-badge {
                 font-size: 10px;
-                padding: 4px 9px;
-                letter-spacing: 0;
+                padding: 5px 10px;
                 gap: 5px;
+                letter-spacing: 0;
             }
-        }
-
-        .hero-badge .dot {
-            width: 6px; height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: blink 2s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .2; }
+            .badge-sep, .badge-sep ~ span { display: none; }
         }
 
         .hero h1 {
@@ -716,22 +712,6 @@
         }
 
         /* TRENDING BADGE */
-        .trending-live {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #ff450012;
-            border: 1px solid #ff450030;
-            color: #ff6b35;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 100px;
-            letter-spacing: .3px;
-            white-space: nowrap;
-            margin-bottom: 18px;
-        }
-
         .fire-blink {
             animation: fireBlink 1s ease-in-out infinite;
             display: inline-block;
@@ -804,13 +784,13 @@
             <meta itemprop="name" content="Philips Walita">
         </div>
         <div class="hero-badge">
-            <span class="dot"></span>
-            Verificado hoje — <span id="hero-date">28 Mar 2026</span>
+            <span class="fire-blink">🔥</span>
+            Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje
+            <span class="badge-sep">·</span>
+            <span id="hero-date">28 Mar 2026</span>
         </div>
         <h1 itemprop="name">Air Fryer Philips Walita<br><em>Serie 1000 XL</em><br>6,2L</h1>
         <p class="hero-sub" itemprop="description">1700W · Tecnologia RapidAir · 90% menos gordura<br>Na loja oficial sai R$499. Achei <strong>R$329 no ML</strong>.</p>
-
-        <div class="trending-live"><span class="fire-blink">🔥</span> Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje</div>
 
         <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
             <meta itemprop="priceCurrency" content="BRL">
