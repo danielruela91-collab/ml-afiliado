@@ -110,20 +110,34 @@
             padding: 40px 20px 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto 1fr;
+            grid-template-areas:
+                "trend img"
+                "text  img";
             column-gap: 48px;
-            row-gap: 20px;
+            row-gap: 16px;
             align-items: start;
         }
 
+        .trending-block { grid-area: trend; }
+        .hero-text      { grid-area: text; }
+        .hero-img       { grid-area: img; align-self: center; }
+
         @media (max-width: 640px) {
-            .hero { grid-template-columns: 1fr; padding: 28px 16px 0; row-gap: 16px; column-gap: 0; }
-            .hero-img { order: 2; max-width: 200px; margin: 0 auto; }
+            .hero {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "trend"
+                    "img"
+                    "text";
+                padding: 24px 16px 0;
+                row-gap: 16px;
+                column-gap: 0;
+            }
+            .hero-img { max-width: 200px; margin: 0 auto; }
         }
 
         /* TRENDING BLOCK */
         .trending-block {
-            grid-column: 1 / -1;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -247,9 +261,9 @@
 
         .hero-sub {
             color: var(--muted);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 28px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 18px;
         }
 
         /* PRICE HERO */
@@ -862,7 +876,7 @@
             <meta itemprop="name" content="Philips Walita">
         </div>
         <h1 itemprop="name">Air Fryer Philips Walita<br><em>Serie 1000 XL</em><br>6,2L</h1>
-        <p class="hero-sub" itemprop="description">1700W · Tecnologia RapidAir · 90% menos gordura<br>Na loja oficial sai R$499. Achei <strong>R$329 no ML</strong>.</p>
+        <p class="hero-sub" itemprop="description">1700W · Tecnologia RapidAir · 6,2L · 90% menos gordura</p>
 
         <div class="price-hero" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
             <meta itemprop="priceCurrency" content="BRL">
