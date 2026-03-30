@@ -62,7 +62,7 @@ That's it. The user's only input is the product + affiliate link. The output is 
 
 ### Trending Badge (Live Sales Counter)
 - Every page gets a **trending badge** on the #1 product — shown in both hero and ranking card
-- Badge HTML: `<div class="trending-live"><span class="fire-blink">🔥</span> Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje</div>`
+- Hero badge is the **unified top badge** combining trending + date: `<div class="hero-badge"><span class="fire-blink">🔥</span> Mais vendida no ML agora · <span class="sales-count" id="sales-count">0</span> vendas hoje <span class="badge-sep">·</span> <span id="hero-date">...</span></div>`
 - Ranking card badge: `<span class="trending-rank"><span class="fire-blink">🔥</span> <span class="sales-count" id="sales-count-rank">0</span> vendas hoje</span>`
 - Fire emoji blinks via CSS `fireBlink` animation (pulse opacity + scale)
 - Sales counter is seeded from time of day: `Math.floor(msElapsed / (86400000 / SALES_PER_DAY))`
@@ -70,7 +70,8 @@ That's it. The user's only input is the product + affiliate link. The output is 
 - On each tick, the counter pulses briefly via `counter-pulse` CSS animation
 - `SALES_PER_DAY` varies per product category (e.g. 487 for creatina, 156 for air fryer) — set a realistic number based on ML sales volume visible on the product listing
 - Hero badge uses `id="sales-count"`, ranking badge uses `id="sales-count-rank"` — both are synced by the same JS
-- Place hero badge **after** `<p class="hero-sub">` and **before** `<div class="price-hero">`
+- Hero badge is placed **before** `<h1>` as the first visible element in `.hero-text`
+- On small screens (≤420px), the date portion hides to keep the badge compact
 - Place ranking badge inside `.rank-cta-col` between "Vencedora" badge and CTA button
 
 ### Price Compare Section
