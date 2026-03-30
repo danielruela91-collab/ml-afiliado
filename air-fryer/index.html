@@ -829,6 +829,31 @@
             border-color: #22c55e25;
         }
 
+        /* Rank competitor price */
+        .rank-price-info {
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .rank-comp-price {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .rank-expensive {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--red);
+            background: #f8717110;
+            border: 1px solid #f8717130;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
         /* animations */
         .fade-in {
             animation: fadeUp .55s ease both;
@@ -957,6 +982,10 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-position-badge">#2 Recomendada</span>
+                <div class="rank-price-info">
+                    <span class="rank-comp-price">R$ 399</span>
+                    <span class="rank-expensive">+21% mais caro</span>
+                </div>
             </div>
         </div>
 
@@ -978,6 +1007,10 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-position-badge">#3 Recomendada</span>
+                <div class="rank-price-info">
+                    <span class="rank-comp-price">R$ 379</span>
+                    <span class="rank-expensive">+15% mais caro</span>
+                </div>
             </div>
         </div>
 
@@ -991,7 +1024,7 @@
                 <div class="rank-brand">Elgin</div>
                 <div class="rank-product">Air Fryer Pratica Fry · 3,7L · 1400W</div>
                 <div class="rank-tags">
-                    <span class="rank-tag">Mais barata</span>
+                    <span class="rank-tag">Menor capacidade</span>
                     <span class="rank-tag">Air Circuit 360°</span>
                     <span class="rank-tag">4.8 estrelas</span>
                     <span class="rank-tag">Compacta</span>
@@ -999,97 +1032,16 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-position-badge">#4 Recomendada</span>
+                <div class="rank-price-info">
+                    <span class="rank-comp-price">R$ 449</span>
+                    <span class="rank-expensive">+36% mais caro</span>
+                </div>
             </div>
         </div>
 
     </div>
 </section>
 
-<!-- COMPARE SECTION -->
-<section class="compare-section fade-in delay-1">
-    <div class="section-title">Comparacao de precos</div>
-    <div class="section-sub">Mesmo produto · Air Fryer Philips Walita Serie 1000 XL NA130 · Consultado em <span id="compare-date">28/03/2026</span></div>
-
-    <div class="compare-table">
-        <!-- header -->
-        <div class="compare-row header">
-            <div>Loja</div>
-            <div>Preco</div>
-            <div>Frete</div>
-            <div>Status</div>
-        </div>
-
-        <!-- ML — BEST -->
-        <div class="compare-row best">
-            <div class="compare-store">
-                <div class="store-icon">🛒</div>
-                <div>
-                    <div class="store-name">Mercado Livre</div>
-                    <div class="store-tag">★ Menor preco encontrado</div>
-                </div>
-            </div>
-            <div class="compare-price">R$ 329</div>
-            <div class="compare-shipping free-ship">Gratis</div>
-            <div class="compare-status"><span class="status-best">Melhor oferta</span></div>
-        </div>
-
-        <!-- Loja Oficial Walita -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">🏪</div>
-                <div>
-                    <div class="store-name">Loja Oficial Walita</div>
-                    <div class="store-tag">walita.com.br</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 399</div>
-            <div class="compare-shipping paid-ship">A partir de R$ 20</div>
-            <div class="compare-status status-high">+21% mais caro</div>
-        </div>
-
-        <!-- Shopee -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">🟠</div>
-                <div>
-                    <div class="store-name">Shopee</div>
-                    <div class="store-tag">Terceiros</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 359</div>
-            <div class="compare-shipping paid-ship">Frete variavel</div>
-            <div class="compare-status status-high">+9% mais caro</div>
-        </div>
-
-        <!-- Amazon -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">📦</div>
-                <div>
-                    <div class="store-name">Amazon</div>
-                    <div class="store-tag">Marketplace</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 420</div>
-            <div class="compare-shipping paid-ship">R$ 15–25</div>
-            <div class="compare-status status-high">+28% mais caro</div>
-        </div>
-
-        <!-- Magazine Luiza -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">🟦</div>
-                <div>
-                    <div class="store-name">Magazine Luiza</div>
-                    <div class="store-tag">magazineluiza.com.br</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 389</div>
-            <div class="compare-shipping paid-ship">A partir de R$ 18</div>
-            <div class="compare-status status-high">+18% mais caro</div>
-        </div>
-    </div>
-</section>
 
 <!-- BENEFITS -->
 <div class="benefits-section fade-in delay-2">

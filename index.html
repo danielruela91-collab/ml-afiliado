@@ -830,6 +830,31 @@
             border-color: #22c55e25;
         }
 
+        /* Rank competitor price */
+        .rank-price-info {
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .rank-comp-price {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .rank-expensive {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--red);
+            background: #f8717110;
+            border: 1px solid #f8717130;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
         /* animations */
         .fade-in {
             animation: fadeUp .55s ease both;
@@ -958,6 +983,10 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-position-badge">#2 Recomendada</span>
+                <div class="rank-price-info">
+                    <span class="rank-comp-price">R$ 79</span>
+                    <span class="rank-expensive">+103% mais caro</span>
+                </div>
             </div>
         </div>
 
@@ -979,6 +1008,10 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-position-badge">#3 Recomendada</span>
+                <div class="rank-price-info">
+                    <span class="rank-comp-price">R$ 55</span>
+                    <span class="rank-expensive">+41% mais caro</span>
+                </div>
             </div>
         </div>
 
@@ -1000,97 +1033,16 @@
             </div>
             <div class="rank-cta-col">
                 <span class="rank-position-badge">#4 Recomendada</span>
+                <div class="rank-price-info">
+                    <span class="rank-comp-price">R$ 89</span>
+                    <span class="rank-expensive">+128% mais caro</span>
+                </div>
             </div>
         </div>
 
     </div>
 </section>
 
-<!-- COMPARE SECTION -->
-<section class="compare-section fade-in delay-1">
-    <div class="section-title">Comparação de preços</div>
-    <div class="section-sub">Mesmo produto · Creatina Growth Monohidratada 250g · Consultado em <span id="compare-date">27/03/2026</span></div>
-
-    <div class="compare-table">
-        <!-- header -->
-        <div class="compare-row header">
-            <div>Loja</div>
-            <div>Preço</div>
-            <div>Frete</div>
-            <div>Status</div>
-        </div>
-
-        <!-- ML — BEST -->
-        <div class="compare-row best">
-            <div class="compare-store">
-                <div class="store-icon">🛒</div>
-                <div>
-                    <div class="store-name">Mercado Livre</div>
-                    <div class="store-tag">★ Menor preço encontrado</div>
-                </div>
-            </div>
-            <div class="compare-price">R$ 39</div>
-            <div class="compare-shipping free-ship">Grátis</div>
-            <div class="compare-status"><span class="status-best">Melhor oferta</span></div>
-        </div>
-
-        <!-- Loja Oficial Growth -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">🏪</div>
-                <div>
-                    <div class="store-name">Loja Oficial Growth</div>
-                    <div class="store-tag">gsuplementos.com.br</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 62</div>
-            <div class="compare-shipping paid-ship">A partir de R$ 15</div>
-            <div class="compare-status status-high">+59% mais caro</div>
-        </div>
-
-        <!-- Shopee -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">🟠</div>
-                <div>
-                    <div class="store-name">Shopee</div>
-                    <div class="store-tag">Terceiros</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 54</div>
-            <div class="compare-shipping paid-ship">Frete variável</div>
-            <div class="compare-status status-high">+38% mais caro</div>
-        </div>
-
-        <!-- Amazon -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">📦</div>
-                <div>
-                    <div class="store-name">Amazon</div>
-                    <div class="store-tag">Marketplace</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 67</div>
-            <div class="compare-shipping paid-ship">R$ 12–20</div>
-            <div class="compare-status status-high">+72% mais caro</div>
-        </div>
-
-        <!-- Netshoes -->
-        <div class="compare-row">
-            <div class="compare-store">
-                <div class="store-icon">👟</div>
-                <div>
-                    <div class="store-name">Netshoes</div>
-                    <div class="store-tag">netshoes.com.br</div>
-                </div>
-            </div>
-            <div class="compare-price" style="color:#f0f0f5">R$ 59</div>
-            <div class="compare-shipping paid-ship">A partir de R$ 10</div>
-            <div class="compare-status status-high">+51% mais caro</div>
-        </div>
-    </div>
-</section>
 
 <!-- BENEFITS -->
 <div class="benefits-section fade-in delay-2">
