@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Divisão de Despesas · Daniel & Marina</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060608;
+      --surface: #0f0f12;
+      --surface2: #18181e;
+      --border: #2a2a35;
+      --accent: #FFE600;
+      --accent-dim: #FFE60015;
+      --text: #f0f0f5;
+      --muted: #6b6b7a;
+      --daniel: #3b82f6;
+      --marina: #ec4899;
+      --green: #22c55e;
+      --orange: #f97316;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+    .app-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .app-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .app-header h1 .hl { color: var(--accent); }
+    .app-header p { color: var(--muted); font-size: 0.83rem; margin-top: 4px; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+    /* Month nav */
+    .month-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px 0 20px;
+    }
+    .month-nav button {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 38px; height: 38px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: border-color .2s, color .2s;
+    }
+    .month-nav button:hover { border-color: var(--accent); color: var(--accent); }
+    .month-nav .month-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      min-width: 190px;
+      text-align: center;
+    }
+
+    /* Split summary */
+    .split-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .split-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .split-card.total { border-color: var(--accent); background: var(--accent-dim); }
+    .split-card .person-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .split-card.daniel .person-name { color: var(--daniel); }
+    .split-card.marina .person-name { color: var(--marina); }
+    .split-card.total .person-name { color: var(--accent); }
+    .split-card .amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .split-card .pct { font-size: 0.75rem; color: var(--muted); margin-top: 5px; }
+    .split-card .breakdown-detail {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+    .split-card.no-data .amount { font-size: 0.9rem; color: var(--muted); }
+
+    /* Inputs */
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      color: var(--muted);
+    }
+    .expenses-card { grid-column: 1 / -1; }
+    .expenses-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .expense-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .expense-item label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+    .expense-item .input-row { background: var(--surface); }
+    .input-row:focus-within { border-color: var(--accent); }
+    .daniel-card .input-row:focus-within { border-color: var(--daniel); }
+    .marina-card .input-row:focus-within { border-color: var(--marina); }
+    .input-row span {
+      padding: 0 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .input-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.93rem;
+      font-weight: 600;
+      padding: 10px 12px 10px 0;
+      outline: none;
+      min-width: 0;
+    }
+    .input-row input::placeholder { color: var(--muted); font-weight: 400; }
+
+    /* Charts */
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .chart-card h3 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+    .chart-container { position: relative; height: 210px; }
+
+    /* Insights */
+    .insights-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .insights-header .section-title { margin-bottom: 0; }
+    .ai-badge {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      font-size: 0.67rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .insight-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .insight-card.highlight { border-color: var(--accent); background: var(--accent-dim); }
+    .insight-card.warning { border-color: var(--orange); background: rgba(249,115,22,.08); }
+    .insight-card.positive { border-color: var(--green); background: rgba(34,197,94,.08); }
+    .insight-card .insight-icon { font-size: 1.4rem; margin-bottom: 7px; }
+    .insight-card h4 { font-size: 0.83rem; font-weight: 700; margin-bottom: 5px; }
+    .insight-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+    .insight-card p strong { color: var(--text); }
+    .insight-card.highlight p strong { color: var(--accent); }
+    .insight-card.warning p strong { color: var(--orange); }
+    .insight-card.positive p strong { color: var(--green); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .split-summary { grid-template-columns: 1fr; }
+      .inputs-grid { grid-template-columns: 1fr; }
+      .expenses-card { grid-column: 1; }
+      .expenses-grid { grid-template-columns: 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .month-nav .month-label { font-size: 1.05rem; min-width: 150px; }
+      .split-card .amount { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>Divisão de Despesas <span class="hl">Daniel & Marina</span></h1>
+  <p>Divisão proporcional pela renda · Histórico desde Abril 2025</p>
+</header>
+
+<div class="container">
+
+  <!-- Month navigator -->
+  <div class="month-nav">
+    <button id="btn-prev">&#8592;</button>
+    <div class="month-label" id="month-label">—</div>
+    <button id="btn-next">&#8594;</button>
+  </div>
+
+  <!-- Split summary -->
+  <div class="split-summary">
+    <div class="split-card daniel" id="card-daniel">
+      <div class="person-name">Daniel</div>
+      <div class="amount" id="daniel-pays">—</div>
+      <div class="pct" id="daniel-pct"></div>
+    </div>
+    <div class="split-card total">
+      <div class="person-name">Total do Mês</div>
+      <div class="amount" id="total-amount">—</div>
+      <div class="breakdown-detail" id="total-breakdown"></div>
+    </div>
+    <div class="split-card marina" id="card-marina">
+      <div class="person-name">Marina</div>
+      <div class="amount" id="marina-pays">—</div>
+      <div class="pct" id="marina-pct"></div>
+    </div>
+  </div>
+
+  <!-- Income & expense inputs -->
+  <div class="inputs-grid">
+    <div class="card daniel-card">
+      <div class="card-title" style="color:#3b82f6">Renda · Daniel</div>
+      <div class="input-row">
+        <span>R$</span>
+        <input type="number" id="input-daniel-income" placeholder="ex: 8000" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="card marina-card">
+      <div class="card-title" style="color:#ec4899">Renda · Marina</div>
+      <div class="input-row">
+        <span>R$</span>
+        <input type="number" id="input-marina-income" placeholder="ex: 10000" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="card expenses-card">
+      <div class="card-title">Despesas do Mês</div>
+      <div class="expenses-grid">
+        <div class="expense-item">
+          <label>🏠 Aluguel</label>
+          <div class="input-row">
+            <span>R$</span>
+            <input type="number" id="input-aluguel" placeholder="0,00" min="0" step="0.01">
+          </div>
+        </div>
+        <div class="expense-item">
+          <label>🔥 Gás</label>
+          <div class="input-row">
+            <span>R$</span>
+            <input type="number" id="input-gas" placeholder="0,00" min="0" step="0.01">
+          </div>
+        </div>
+        <div class="expense-item">
+          <label>⚡ Luz</label>
+          <div class="input-row">
+            <span>R$</span>
+            <input type="number" id="input-luz" placeholder="0,00" min="0" step="0.01">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="section-title">Histórico de Despesas</div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Evolução Mensal — Aluguel · Gás · Luz</h3>
+      <div class="chart-container"><canvas id="chart-history"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Composição deste Mês</h3>
+      <div class="chart-container"><canvas id="chart-breakdown"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Insights -->
+  <div class="insights-header">
+    <div class="section-title">Análise & Insights</div>
+    <div class="ai-badge">Consultor IA</div>
+  </div>
+  <div class="insights-grid" id="insights-grid"></div>
+
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+const SEED = {
+  "2025-04": { aluguel: 3307.37, gas: 134.03,  luz: 586.80 },
+  "2025-05": { aluguel: 3325.94, gas: 225.54,  luz: 435.14 },
+  "2025-06": { aluguel: 3437.60, gas: 264.89,  luz: 317.99 },
+  "2025-07": { aluguel: 3311.26, gas: 277.87,  luz: 286.99 },
+  "2025-08": { aluguel: 3369.01, gas: 306.89,  luz: 289.72 },
+  "2025-09": { aluguel: 3484.30, gas: 248.97,  luz: 222.33 },
+  "2025-10": { aluguel: 3493.51, gas: 223.29,  luz: 339.95 },
+  "2025-11": { aluguel: 3434.47, gas: 261.73,  luz: 320.50 },
+  "2025-12": { aluguel: 3374.63, gas: 146.17,  luz: 336.93 },
+  "2026-01": { aluguel: 3444.77, gas: 235.90,  luz: 326.15 },
+  "2026-02": { aluguel: 3636.13, gas: 154.92,  luz: 538.13 },
+  "2026-03": { aluguel: 3729.92, gas: 227.06,  luz: 444.46 },
+  "2026-04": { aluguel: 3633.18, gas: 0,        luz: 548.83 },
+};
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem('exp-split-v1');
+    if (!raw) return buildFresh();
+    const stored = JSON.parse(raw);
+    // merge any missing seed months
+    for (const [k, v] of Object.entries(SEED)) {
+      if (!stored[k]) stored[k] = { ...v, danielIncome: 0, marinaIncome: 0 };
+    }
+    return stored;
+  } catch(e) { return buildFresh(); }
+}
+
+function buildFresh() {
+  const d = {};
+  for (const [k, v] of Object.entries(SEED))
+    d[k] = { ...v, danielIncome: 0, marinaIncome: 0 };
+  return d;
+}
+
+let data = loadData();
+
+function save() { localStorage.setItem('exp-split-v1', JSON.stringify(data)); }
+
+function allKeys() { return Object.keys(data).sort(); }
+
+function get(key) {
+  return data[key] || { aluguel: 0, gas: 0, luz: 0, danielIncome: 0, marinaIncome: 0 };
+}
+
+function total(key) {
+  const d = get(key);
+  return (d.aluguel||0) + (d.gas||0) + (d.luz||0);
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────────────────────
+let idx;
+const keys = allKeys();
+// default to Mar 2026
+idx = keys.indexOf('2026-03');
+if (idx < 0) idx = keys.length - 1;
+
+function fmtKey(key) {
+  const [y, m] = key.split('-');
+  return MONTHS_PT[parseInt(m) - 1] + ' ' + y;
+}
+
+function fmtBRL(n) {
+  if (!n && n !== 0) return '—';
+  return 'R$\u00a0' + n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function fmtShort(n) {
+  return 'R$\u00a0' + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (idx > 0) { idx--; render(); }
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (idx < keys.length - 1) { idx++; render(); }
+});
+
+// ── INPUTS ──────────────────────────────────────────────────────────────────
+const FIELD_MAP = {
+  'input-daniel-income': 'danielIncome',
+  'input-marina-income': 'marinaIncome',
+  'input-aluguel':       'aluguel',
+  'input-gas':           'gas',
+  'input-luz':           'luz',
+};
+
+for (const [id, field] of Object.entries(FIELD_MAP)) {
+  document.getElementById(id).addEventListener('input', e => {
+    const key = keys[idx];
+    if (!data[key]) data[key] = { aluguel:0, gas:0, luz:0, danielIncome:0, marinaIncome:0 };
+    data[key][field] = parseFloat(e.target.value) || 0;
+    save();
+    updateSplit();
+    updateCharts();
+    updateInsights();
+  });
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  const key = keys[idx];
+  const d = get(key);
+  document.getElementById('month-label').textContent = fmtKey(key);
+  document.getElementById('input-daniel-income').value = d.danielIncome || '';
+  document.getElementById('input-marina-income').value = d.marinaIncome || '';
+  document.getElementById('input-aluguel').value = d.aluguel || '';
+  document.getElementById('input-gas').value = d.gas || '';
+  document.getElementById('input-luz').value = d.luz || '';
+  updateSplit();
+  updateCharts();
+  updateInsights();
+}
+
+function updateSplit() {
+  const key = keys[idx];
+  const d = get(key);
+  const tot = (d.aluguel||0) + (d.gas||0) + (d.luz||0);
+  const dInc = d.danielIncome || 0;
+  const mInc = d.marinaIncome || 0;
+  const totInc = dInc + mInc;
+
+  document.getElementById('total-amount').textContent = fmtBRL(tot);
+  document.getElementById('total-breakdown').innerHTML =
+    `🏠 ${fmtBRL(d.aluguel||0)}<br>🔥 ${fmtBRL(d.gas||0)} &nbsp;⚡ ${fmtBRL(d.luz||0)}`;
+
+  const cardD = document.getElementById('card-daniel');
+  const cardM = document.getElementById('card-marina');
+
+  if (totInc > 0) {
+    const pD = dInc / totInc;
+    const pM = mInc / totInc;
+    document.getElementById('daniel-pays').textContent = fmtBRL(tot * pD);
+    document.getElementById('marina-pays').textContent = fmtBRL(tot * pM);
+    document.getElementById('daniel-pct').textContent = `${(pD*100).toFixed(1)}% da renda combinada`;
+    document.getElementById('marina-pct').textContent = `${(pM*100).toFixed(1)}% da renda combinada`;
+    cardD.classList.remove('no-data');
+    cardM.classList.remove('no-data');
+  } else {
+    document.getElementById('daniel-pays').textContent = 'Insira a renda';
+    document.getElementById('marina-pays').textContent = 'Insira a renda';
+    document.getElementById('daniel-pct').textContent = 'para calcular a divisão';
+    document.getElementById('marina-pct').textContent = 'para calcular a divisão';
+    cardD.classList.add('no-data');
+    cardM.classList.add('no-data');
+  }
+}
+
+// ── CHARTS ───────────────────────────────────────────────────────────────────
+Chart.defaults.color = '#6b6b7a';
+Chart.defaults.font.family = 'Inter';
+
+const hCtx = document.getElementById('chart-history').getContext('2d');
+const histChart = new Chart(hCtx, {
+  type: 'bar',
+  data: { labels: [], datasets: [] },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 11, padding: 10, font: { size: 11 } } },
+      tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${fmtBRL(c.raw)}` } },
+    },
+    scales: {
+      x: { stacked: true, grid: { color: '#1e1e28' }, ticks: { font: { size: 10 } } },
+      y: { stacked: true, grid: { color: '#1e1e28' }, ticks: {
+        callback: v => 'R$' + (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v),
+        font: { size: 10 }
+      }},
+    },
+  },
+});
+
+const bCtx = document.getElementById('chart-breakdown').getContext('2d');
+const brkChart = new Chart(bCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Aluguel', 'Gás', 'Luz'],
+    datasets: [{ data: [0,0,0], backgroundColor: ['#3b82f6','#f97316','#FFE600'], borderWidth: 0, hoverOffset: 6 }],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 11, padding: 10, font: { size: 11 } } },
+      tooltip: { callbacks: { label: c => ` ${c.label}: ${fmtBRL(c.raw)}` } },
+    },
+  },
+});
+
+function updateCharts() {
+  const ks = allKeys();
+  const labels = ks.map(k => {
+    const [y, m] = k.split('-');
+    return MONTHS_PT[parseInt(m)-1].slice(0,3) + '/' + y.slice(2);
+  });
+  histChart.data.labels = labels;
+  histChart.data.datasets = [
+    { label: 'Aluguel', data: ks.map(k => get(k).aluguel||0), backgroundColor: '#3b82f6', borderRadius: 3 },
+    { label: 'Gás',     data: ks.map(k => get(k).gas||0),     backgroundColor: '#f97316', borderRadius: 3 },
+    { label: 'Luz',     data: ks.map(k => get(k).luz||0),     backgroundColor: '#FFE600', borderRadius: 3 },
+  ];
+  histChart.update();
+
+  const d = get(keys[idx]);
+  brkChart.data.datasets[0].data = [d.aluguel||0, d.gas||0, d.luz||0];
+  brkChart.update();
+}
+
+// ── INSIGHTS ─────────────────────────────────────────────────────────────────
+function updateInsights() {
+  const key = keys[idx];
+  const d = get(key);
+  const ks = allKeys();
+  const tot = total(key);
+  const allTotals = ks.map(k => total(k)).filter(v => v > 0);
+  const avg = allTotals.reduce((a,b)=>a+b,0) / allTotals.length;
+  const maxTot = Math.max(...allTotals);
+  const maxMonthKey = ks[ks.map(k => total(k)).indexOf(maxTot)];
+
+  const prevKey = idx > 0 ? keys[idx-1] : null;
+  const prevTot = prevKey ? total(prevKey) : 0;
+
+  const gasVals = ks.map(k => get(k).gas||0).filter(v=>v>0);
+  const avgGas = gasVals.reduce((a,b)=>a+b,0) / gasVals.length;
+  const maxGas = Math.max(...gasVals);
+  const maxGasKey = ks[ks.map(k=>get(k).gas||0).indexOf(maxGas)];
+
+  const luzVals = ks.map(k => get(k).luz||0).filter(v=>v>0);
+  const avgLuz = luzVals.reduce((a,b)=>a+b,0) / luzVals.length;
+
+  const firstRent = get(ks[0]).aluguel || 0;
+  const lastRent = d.aluguel || 0;
+  const rentPct = firstRent > 0 ? (lastRent - firstRent) / firstRent * 100 : 0;
+
+  const dInc = d.danielIncome || 0;
+  const mInc = d.marinaIncome || 0;
+  const totInc = dInc + mInc;
+
+  const cards = [];
+
+  // 1. vs average
+  if (tot > 0 && avg > 0) {
+    const diff = tot - avg;
+    const pct = Math.abs(diff / avg * 100);
+    if (diff > 50) {
+      cards.push({ icon:'📈', type:'warning', title:'Acima da média histórica',
+        text:`Este mês está <strong>${pct.toFixed(0)}% acima</strong> da média de <strong>${fmtBRL(avg)}</strong>. Total: <strong>${fmtBRL(tot)}</strong>.` });
+    } else if (diff < -50) {
+      cards.push({ icon:'✅', type:'positive', title:'Abaixo da média histórica',
+        text:`Este mês está <strong>${pct.toFixed(0)}% abaixo</strong> da média de <strong>${fmtBRL(avg)}</strong>. Mês tranquilo para as finanças!` });
+    } else {
+      cards.push({ icon:'📊', type:'', title:'Dentro da média',
+        text:`Total de <strong>${fmtBRL(tot)}</strong> está dentro da média histórica de <strong>${fmtBRL(avg)}</strong>. Variação de apenas <strong>${pct.toFixed(0)}%</strong>.` });
+    }
+  }
+
+  // 2. vs previous month
+  if (prevKey && prevTot > 0 && tot > 0) {
+    const diff = tot - prevTot;
+    const pct = Math.abs(diff / prevTot * 100);
+    cards.push({ icon: diff > 0 ? '⬆️' : '⬇️',
+      type: diff > 100 ? 'warning' : diff < -100 ? 'positive' : '',
+      title: `${diff > 0 ? 'Alta' : 'Queda'} em relação a ${fmtKey(prevKey).split(' ')[0]}`,
+      text: `De <strong>${fmtBRL(prevTot)}</strong> para <strong>${fmtBRL(tot)}</strong> — ${diff > 0 ? '+' : ''}${fmtBRL(diff)} (<strong>${diff > 0 ? '+' : '-'}${pct.toFixed(1)}%</strong>).` });
+  }
+
+  // 3. Income split
+  if (totInc > 0) {
+    const pD = (dInc / totInc * 100).toFixed(1);
+    const pM = (mInc / totInc * 100).toFixed(1);
+    cards.push({ icon:'⚖️', type:'highlight', title:'Divisão proporcional',
+      text:`Com renda de <strong>${fmtBRL(dInc)}</strong> (Daniel) e <strong>${fmtBRL(mInc)}</strong> (Marina):<br>
+            Daniel paga <strong>${pD}%</strong> = <strong>${fmtBRL(tot * dInc / totInc)}</strong><br>
+            Marina paga <strong>${pM}%</strong> = <strong>${fmtBRL(tot * mInc / totInc)}</strong>` });
+  } else {
+    cards.push({ icon:'💡', type:'', title:'Insira as rendas',
+      text:`Digite a renda mensal de cada um para calcular a divisão proporcional. As despesas somam <strong>${fmtBRL(tot)}</strong> este mês.` });
+  }
+
+  // 4. Aluguel trend
+  if (rentPct !== 0 && firstRent > 0) {
+    cards.push({ icon:'🏠', type: rentPct > 8 ? 'warning' : '',
+      title:'Evolução do Aluguel',
+      text:`O aluguel subiu <strong>${rentPct.toFixed(1)}%</strong> desde ${fmtKey(ks[0]).split(' ')[0]} ${ks[0].split('-')[0]} — de <strong>${fmtBRL(firstRent)}</strong> para <strong>${fmtBRL(lastRent)}</strong>. ${rentPct > 6 ? 'Acima do IPCA anual — vale renegociar.' : 'Crescimento moderado.'}` });
+  }
+
+  // 5. Gas seasonality
+  if (avgGas > 0) {
+    const [,m] = key.split('-');
+    const mo = parseInt(m);
+    if (mo >= 6 && mo <= 9) {
+      cards.push({ icon:'🔥', type:'warning', title:'Pico de Gás — Inverno',
+        text:`Gás tende a ser mais caro no inverno. Pico histórico: <strong>${fmtBRL(maxGas)}</strong> em <strong>${fmtKey(maxGasKey)}</strong>. Média anual: <strong>${fmtBRL(avgGas)}</strong>.` });
+    } else if (d.gas > 0 && Math.abs(d.gas - avgGas) > 40) {
+      const above = d.gas > avgGas;
+      cards.push({ icon:'🔥', type: above ? 'warning' : 'positive',
+        title: `Gás ${above ? 'cara' : 'barata'} este mês`,
+        text:`Conta de Gás: <strong>${fmtBRL(d.gas)}</strong> vs média histórica de <strong>${fmtBRL(avgGas)}</strong>. ${above ? `<strong>+${fmtBRL(d.gas-avgGas)} acima</strong> do normal.` : `<strong>${fmtBRL(avgGas-d.gas)} abaixo</strong> do normal.`}` });
+    }
+  }
+
+  // 6. Luz
+  if (d.luz > 0 && avgLuz > 0 && Math.abs(d.luz - avgLuz) > 40) {
+    const above = d.luz > avgLuz;
+    cards.push({ icon:'⚡', type: above ? 'warning' : 'positive',
+      title: `Luz ${above ? 'alta' : 'baixa'} este mês`,
+      text:`Conta de Luz: <strong>${fmtBRL(d.luz)}</strong> — média histórica é <strong>${fmtBRL(avgLuz)}</strong>. ${above ? `Verifique aparelhos de alto consumo (ar-cond., chuveiro).` : `Abaixo da média, bom mês de consumo.`}` });
+  }
+
+  // 7. Worst month
+  if (maxMonthKey) {
+    cards.push({ icon:'🏆', type:'', title:'Mês de maior gasto',
+      text:`O mês mais caro no histórico foi <strong>${fmtKey(maxMonthKey)}</strong> com <strong>${fmtBRL(maxTot)}</strong>. A média mensal é <strong>${fmtBRL(avg)}</strong>.` });
+  }
+
+  // 8. Annual projection
+  if (avg > 0) {
+    const annual = avg * 12;
+    cards.push({ icon:'📅', type:'', title:'Projeção anual',
+      text:`Pela média histórica, as despesas fixas custam <strong>${fmtBRL(annual)}</strong> por ano — <strong>${fmtBRL(avg)}</strong>/mês em média.` });
+  }
+
+  document.getElementById('insights-grid').innerHTML = cards.map(c => `
+    <div class="insight-card ${c.type}">
+      <div class="insight-icon">${c.icon}</div>
+      <h4>${c.title}</h4>
+      <p>${c.text}</p>
+    </div>`).join('');
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
