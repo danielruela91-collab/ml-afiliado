@@ -22,6 +22,7 @@
             --accent-glow: rgba(255,107,0,0.25);
             --accent-glow-strong: rgba(255,107,0,0.45);
             --green: #22c55e;
+            --gold: #FFD700;
             --radius: 16px;
         }
 
@@ -47,15 +48,15 @@
             letter-spacing: .3px;
         }
 
-        /* ─── HERO ─── */
-        .hero {
-            max-width: 720px;
+        /* ─── SLOT MACHINE HERO ─── */
+        .slot-hero {
+            max-width: 480px;
             margin: 0 auto;
-            padding: 60px 20px 40px;
+            padding: 40px 20px 20px;
             text-align: center;
         }
 
-        .hero-badge {
+        .slot-hero-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -68,13 +69,11 @@
             border-radius: 100px;
             letter-spacing: .8px;
             text-transform: uppercase;
-            margin-bottom: 28px;
-            animation: fadeUp .5s ease both;
+            margin-bottom: 20px;
         }
 
-        .hero-badge .pulse-dot {
-            width: 8px;
-            height: 8px;
+        .slot-hero-badge .pulse-dot {
+            width: 8px; height: 8px;
             background: var(--accent);
             border-radius: 50%;
             animation: pulseDot 1.5s ease-in-out infinite;
@@ -85,80 +84,376 @@
             50% { opacity: .7; box-shadow: 0 0 0 6px rgba(255,107,0,0); }
         }
 
-        .hero h1 {
+        .slot-hero h1 {
             font-family: 'Syne', sans-serif;
-            font-size: clamp(32px, 7vw, 56px);
+            font-size: clamp(22px, 5.5vw, 32px);
             font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -1px;
-            margin-bottom: 10px;
-            animation: fadeUp .55s ease both .1s;
+            line-height: 1.15;
+            margin-bottom: 8px;
         }
 
-        .hero h1 em {
+        .slot-hero h1 em {
             font-style: normal;
             color: var(--accent);
-            text-shadow: 0 0 40px var(--accent-glow);
         }
 
-        .hero h1 .spins-num {
-            display: inline-block;
-            font-size: clamp(48px, 10vw, 80px);
-            color: var(--accent);
-            text-shadow: 0 0 60px var(--accent-glow-strong);
-            line-height: 1;
-        }
-
-        .hero-sub {
+        .slot-hero-sub {
             color: var(--muted);
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 36px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-            animation: fadeUp .55s ease both .2s;
+            font-size: 14px;
+            margin-bottom: 28px;
         }
 
-        /* ─── SPINS VISUAL ─── */
-        .spins-display {
+        /* ─── SLOT MACHINE ─── */
+        .slot-machine {
+            background: linear-gradient(180deg, #1a1220 0%, #12101a 100%);
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            padding: 24px 20px 20px;
+            position: relative;
+            box-shadow: 0 0 40px var(--accent-glow), 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            overflow: hidden;
+        }
+
+        .slot-machine::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .slot-top-lights {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 36px;
-            animation: fadeUp .55s ease both .15s;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
-        .spin-slot {
-            width: 56px;
-            height: 64px;
-            background: var(--surface);
-            border: 2px solid var(--accent);
+        .slot-light {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            animation: lightBlink 1.2s ease-in-out infinite;
+        }
+
+        .slot-light:nth-child(1) { background: #ff4444; animation-delay: 0s; }
+        .slot-light:nth-child(2) { background: var(--gold); animation-delay: .15s; }
+        .slot-light:nth-child(3) { background: var(--green); animation-delay: .3s; }
+        .slot-light:nth-child(4) { background: var(--accent); animation-delay: .45s; }
+        .slot-light:nth-child(5) { background: #ff4444; animation-delay: .6s; }
+        .slot-light:nth-child(6) { background: var(--gold); animation-delay: .75s; }
+        .slot-light:nth-child(7) { background: var(--green); animation-delay: .9s; }
+
+        @keyframes lightBlink {
+            0%, 100% { opacity: 1; box-shadow: 0 0 6px currentColor; }
+            50% { opacity: .3; box-shadow: none; }
+        }
+
+        .slot-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 14px;
+            text-shadow: 0 0 10px rgba(255,215,0,0.3);
+        }
+
+        /* Reels container */
+        .slot-reels {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding: 12px;
+            background: #08080d;
             border-radius: 12px;
+            border: 1px solid #252530;
+        }
+
+        .slot-reel {
+            width: 72px;
+            height: 80px;
+            background: linear-gradient(180deg, #0d0d15 0%, #15151f 50%, #0d0d15 100%);
+            border: 1px solid #303045;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Reel shine overlay */
+        .slot-reel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 30%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .slot-reel::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 30%;
+            background: linear-gradient(0deg, rgba(255,255,255,0.04), transparent);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .reel-strip {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: none;
+        }
+
+        .reel-symbol {
+            width: 72px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        @media (max-width: 400px) {
+            .slot-reel { width: 60px; height: 68px; }
+            .reel-symbol { width: 60px; height: 68px; font-size: 32px; }
+        }
+
+        /* Win line */
+        .slot-reels.win-state {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(255,215,0,0.3), inset 0 0 20px rgba(255,215,0,0.05);
+        }
+
+        /* SPIN BUTTON */
+        .spin-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(180deg, var(--accent-light) 0%, var(--accent) 100%);
+            color: #000;
+            font-weight: 800;
+            font-size: 16px;
+            padding: 14px 40px;
+            border-radius: 100px;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            box-shadow: 0 0 24px var(--accent-glow), 0 4px 16px rgba(0,0,0,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spin-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .spin-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 40px var(--accent-glow-strong), 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .spin-btn:active {
+            transform: scale(0.97);
+        }
+
+        .spin-btn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .spin-btn:disabled::before { animation: none; }
+
+        .spin-icon {
+            font-size: 20px;
+            animation: spinIcon 3s linear infinite;
+        }
+
+        @keyframes spinIcon {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spin-btn:disabled .spin-icon { animation: none; }
+
+        .slot-hint {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 12px;
+        }
+
+        /* ─── WIN OVERLAY ─── */
+        .win-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+        }
+
+        .win-overlay.active {
+            display: flex;
+        }
+
+        .win-modal {
+            background: linear-gradient(180deg, #1a1220 0%, #0e0c14 100%);
+            border: 2px solid var(--gold);
+            border-radius: 24px;
+            padding: 40px 36px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 0 80px rgba(255,215,0,0.2), 0 0 200px rgba(255,107,0,0.1);
+            animation: winPopIn .4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        @keyframes winPopIn {
+            from { opacity: 0; transform: scale(0.8) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .win-confetti {
+            font-size: 48px;
+            margin-bottom: 12px;
+            animation: confettiBounce 1s ease infinite;
+        }
+
+        @keyframes confettiBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .win-title {
+            font-family: 'Syne', sans-serif;
             font-size: 28px;
-            box-shadow: 0 0 20px var(--accent-glow), inset 0 0 20px rgba(255,107,0,0.05);
-            animation: slotGlow 2s ease-in-out infinite;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 6px;
+            text-shadow: 0 0 20px rgba(255,215,0,0.3);
         }
 
-        .spin-slot:nth-child(2) { animation-delay: .2s; }
-        .spin-slot:nth-child(3) { animation-delay: .4s; }
-        .spin-slot:nth-child(4) { animation-delay: .6s; }
-        .spin-slot:nth-child(5) { animation-delay: .8s; }
-
-        @keyframes slotGlow {
-            0%, 100% { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
-            50% { border-color: var(--accent-light); box-shadow: 0 0 30px var(--accent-glow-strong); }
+        .win-spins {
+            font-family: 'Syne', sans-serif;
+            font-size: 64px;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+            margin: 8px 0;
+            text-shadow: 0 0 40px var(--accent-glow-strong);
         }
 
-        @media (max-width: 480px) {
-            .spin-slot { width: 46px; height: 54px; font-size: 22px; }
-            .spins-display { gap: 7px; }
+        .win-spins-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 24px;
         }
 
-        /* ─── CTA ─── */
+        .win-cta {
+            display: inline-block;
+            background: linear-gradient(180deg, var(--accent-light) 0%, var(--accent) 100%);
+            color: #000;
+            font-weight: 800;
+            font-size: 17px;
+            padding: 16px 40px;
+            border-radius: 100px;
+            text-decoration: none;
+            transition: all .25s;
+            box-shadow: 0 0 30px var(--accent-glow);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .win-cta::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .win-cta:hover {
+            background: linear-gradient(180deg, #FFA040 0%, var(--accent-light) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px var(--accent-glow-strong);
+        }
+
+        .win-cta span {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: none;
+            opacity: .8;
+            margin-top: 4px;
+            letter-spacing: 0;
+        }
+
+        .win-timer {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 16px;
+        }
+
+        .win-timer strong {
+            color: #ff4444;
+        }
+
+        /* ─── PARTICLES ─── */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1001;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 20px;
+            animation: particleFall linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes particleFall {
+            0% { opacity: 1; transform: translateY(-20px) rotate(0deg) scale(1); }
+            100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.3); }
+        }
+
+        /* ─── SECTIONS BELOW ─── */
+        .hero-section {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
         .btn-cta {
             display: inline-block;
             text-align: center;
@@ -172,7 +467,6 @@
             transition: all .25s;
             box-shadow: 0 0 30px var(--accent-glow), 0 4px 20px rgba(0,0,0,0.3);
             letter-spacing: .3px;
-            animation: fadeUp .55s ease both .3s;
             position: relative;
             overflow: hidden;
         }
@@ -206,7 +500,6 @@
             color: var(--muted);
             font-size: 12px;
             margin-top: 14px;
-            animation: fadeUp .55s ease both .35s;
         }
 
         /* ─── HOW IT WORKS ─── */
@@ -246,8 +539,7 @@
         .step-card:hover { border-color: rgba(255,107,0,0.3); }
 
         .step-num {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             background: var(--accent);
             color: #000;
             font-weight: 800;
@@ -259,17 +551,8 @@
             margin: 0 auto 14px;
         }
 
-        .step-card h3 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .step-card p {
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.5;
-        }
+        .step-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .step-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
         /* ─── INFO BLOCK ─── */
         .info-block {
@@ -286,19 +569,9 @@
             padding: 24px;
         }
 
-        .info-card h3 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--accent);
-        }
+        .info-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
 
-        .info-card ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .info-card ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 
         .info-card li {
             font-size: 14px;
@@ -348,6 +621,19 @@
             border-top: 1px solid var(--border);
         }
 
+        .age-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px; height: 32px;
+            border: 2px solid var(--muted);
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
         /* ─── FOOTER ─── */
         .site-footer {
             text-align: center;
@@ -358,13 +644,7 @@
             line-height: 2;
         }
 
-        .site-footer a {
-            color: var(--muted);
-            text-decoration: none;
-            margin: 0 10px;
-            transition: color .2s;
-        }
-
+        .site-footer a { color: var(--muted); text-decoration: none; margin: 0 10px; transition: color .2s; }
         .site-footer a:hover { color: var(--accent); }
         .footer-sep { color: #333; }
 
@@ -373,57 +653,92 @@
             from { opacity: 0; transform: translateY(18px); }
             to   { opacity: 1; transform: translateY(0); }
         }
-
-        /* ─── 18+ BADGE ─── */
-        .age-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--muted);
-            border-radius: 50%;
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--muted);
-            margin-bottom: 20px;
-        }
     </style>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div class="topbar">
-    Oferta exclusiva Betano · 10 Giros Grátis · Válido para novos cadastros
+    🎰 Oferta exclusiva Betano · 10 Giros Grátis · Gire a máquina e ganhe!
 </div>
 
-<!-- HERO -->
-<section class="hero">
-    <div class="hero-badge">
+<!-- SLOT MACHINE HERO -->
+<section class="slot-hero">
+    <div class="slot-hero-badge">
         <span class="pulse-dot"></span>
         Oferta ativa agora
     </div>
 
-    <h1>Ganhe<br><span class="spins-num">10</span><br><em>Giros Grátis</em></h1>
+    <h1>Gire a máquina e<br>ganhe <em>Giros Grátis!</em></h1>
+    <p class="slot-hero-sub">Teste sua sorte — aperte o botão e descubra seu bônus</p>
 
-    <p class="hero-sub">Bônus exclusivo na Betano para novos jogadores. Cadastre-se pelo link abaixo e receba seus free spins automaticamente.</p>
+    <!-- SLOT MACHINE -->
+    <div class="slot-machine">
+        <div class="slot-top-lights">
+            <span class="slot-light"></span>
+            <span class="slot-light"></span>
+            <span class="slot-light"></span>
+            <span class="slot-light"></span>
+            <span class="slot-light"></span>
+            <span class="slot-light"></span>
+            <span class="slot-light"></span>
+        </div>
 
-    <!-- Slot icons visual -->
-    <div class="spins-display">
-        <div class="spin-slot">7</div>
-        <div class="spin-slot">🍒</div>
-        <div class="spin-slot">⭐</div>
-        <div class="spin-slot">🍒</div>
-        <div class="spin-slot">7</div>
+        <div class="slot-label">★ Fortune Spins ★</div>
+
+        <div class="slot-reels" id="slot-reels">
+            <div class="slot-reel">
+                <div class="reel-strip" id="reel-0">
+                    <div class="reel-symbol">🍒</div>
+                </div>
+            </div>
+            <div class="slot-reel">
+                <div class="reel-strip" id="reel-1">
+                    <div class="reel-symbol">⭐</div>
+                </div>
+            </div>
+            <div class="slot-reel">
+                <div class="reel-strip" id="reel-2">
+                    <div class="reel-symbol">🍋</div>
+                </div>
+            </div>
+            <div class="slot-reel">
+                <div class="reel-strip" id="reel-3">
+                    <div class="reel-symbol">7</div>
+                </div>
+            </div>
+            <div class="slot-reel">
+                <div class="reel-strip" id="reel-4">
+                    <div class="reel-symbol">🎰</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="spin-btn" id="spin-btn" onclick="startSpin()">
+            <span class="spin-icon">🎰</span>
+            Girar!
+        </button>
+        <p class="slot-hint">Toque para girar — 100% grátis</p>
     </div>
-
-    <!-- CTA PRINCIPAL -->
-    <a class="btn-cta" id="cta-hero" href="https://betano.com" target="_blank" rel="noopener sponsored">
-        Clique Aqui — 10 Giros Grátis
-        <span>Abre a Betano · Cadastro rápido</span>
-    </a>
-    <p class="cta-note">Apenas para maiores de 18 anos · Jogue com responsabilidade</p>
 </section>
+
+<!-- WIN OVERLAY -->
+<div class="win-overlay" id="win-overlay">
+    <div class="win-modal">
+        <div class="win-confetti">🎉</div>
+        <div class="win-title">Você Ganhou!</div>
+        <div class="win-spins">10</div>
+        <div class="win-spins-label">Giros Grátis</div>
+        <a class="win-cta" id="cta-hero" href="https://betano.com" target="_blank" rel="noopener sponsored">
+            Resgatar Meus Giros →
+            <span>Abre a Betano · Cadastro grátis</span>
+        </a>
+        <p class="win-timer">Oferta expira em <strong id="win-countdown">04:59</strong></p>
+    </div>
+</div>
+
+<!-- Particle container -->
+<div class="particles" id="particles"></div>
 
 <!-- COMO FUNCIONA -->
 <section class="steps-section">
@@ -431,13 +746,13 @@
     <div class="steps-grid">
         <div class="step-card">
             <div class="step-num">1</div>
-            <h3>Clique no botão</h3>
-            <p>Acesse a Betano pelo link exclusivo desta página</p>
+            <h3>Gire a máquina</h3>
+            <p>Aperte o botão acima e descubra seu bônus de giros grátis</p>
         </div>
         <div class="step-card">
             <div class="step-num">2</div>
             <h3>Crie sua conta</h3>
-            <p>Faça seu cadastro gratuito em menos de 2 minutos</p>
+            <p>Faça seu cadastro gratuito na Betano em menos de 2 minutos</p>
         </div>
         <div class="step-card">
             <div class="step-num">3</div>
@@ -468,6 +783,7 @@
         Garantir Meus 10 Giros Grátis →
         <span>Abre a Betano · Oferta limitada</span>
     </a>
+    <p class="cta-note">Apenas para maiores de 18 anos · Jogue com responsabilidade</p>
 </section>
 
 <!-- DISCLAIMER -->
@@ -489,6 +805,143 @@
   </div>
   <div>Site de afiliados · Jogue com responsabilidade · 18+ · © 2026</div>
 </footer>
+
+<script>
+// ─── SLOT MACHINE GAME ───
+const SYMBOLS = ['🍒', '⭐', '🍋', '7️⃣', '🎰', '💎', '🔔', '🍊', '🍇', '🐯'];
+const WIN_SYMBOL = '🐯'; // Tiger wins — tigrinho style
+const REEL_COUNT = 5;
+const SPIN_DURATION = 2500;
+const REEL_DELAY = 300; // stagger each reel stop
+
+let spinning = false;
+let hasWon = false;
+
+function buildReelStrip(finalSymbol, extraSymbols) {
+    // Build a strip of random symbols ending with the final one
+    var symbols = [];
+    for (var i = 0; i < extraSymbols; i++) {
+        symbols.push(SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]);
+    }
+    symbols.push(finalSymbol);
+    return symbols;
+}
+
+function startSpin() {
+    if (spinning) return;
+    spinning = true;
+
+    var btn = document.getElementById('spin-btn');
+    btn.disabled = true;
+
+    var reelsEl = document.getElementById('slot-reels');
+    reelsEl.classList.remove('win-state');
+
+    // Determine result: always win on 1st or 2nd spin
+    var willWin = !hasWon;
+
+    // Build each reel
+    for (var r = 0; r < REEL_COUNT; r++) {
+        (function(reelIdx) {
+            var strip = document.getElementById('reel-' + reelIdx);
+            var finalSym = willWin ? WIN_SYMBOL : SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+
+            // More symbols = longer spin illusion
+            var count = 15 + reelIdx * 5;
+            var allSymbols = buildReelStrip(finalSym, count);
+
+            // Build HTML
+            var html = '';
+            for (var i = 0; i < allSymbols.length; i++) {
+                html += '<div class="reel-symbol">' + allSymbols[i] + '</div>';
+            }
+            strip.innerHTML = html;
+
+            // Reset position
+            strip.style.transition = 'none';
+            strip.style.transform = 'translateY(0)';
+
+            // Force reflow
+            strip.offsetHeight;
+
+            // Animate to final symbol
+            var symbolH = strip.querySelector('.reel-symbol').offsetHeight;
+            var targetY = -(allSymbols.length - 1) * symbolH;
+            var duration = SPIN_DURATION + reelIdx * REEL_DELAY;
+
+            strip.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.15, 0.85, 0.35, 1)';
+            strip.style.transform = 'translateY(' + targetY + 'px)';
+        })(r);
+    }
+
+    // After all reels stop
+    var totalTime = SPIN_DURATION + (REEL_COUNT - 1) * REEL_DELAY + 200;
+
+    setTimeout(function() {
+        spinning = false;
+        btn.disabled = false;
+
+        if (willWin) {
+            hasWon = true;
+            reelsEl.classList.add('win-state');
+            btn.innerHTML = '<span class="spin-icon">🎰</span> Girar de novo!';
+            setTimeout(showWin, 400);
+        }
+    }, totalTime);
+}
+
+function showWin() {
+    document.getElementById('win-overlay').classList.add('active');
+    spawnParticles();
+    startCountdown();
+}
+
+// ─── CONFETTI PARTICLES ───
+function spawnParticles() {
+    var container = document.getElementById('particles');
+    container.innerHTML = '';
+    var emojis = ['🎉', '✨', '⭐', '🎊', '💰', '🐯', '🔥'];
+
+    for (var i = 0; i < 40; i++) {
+        (function(idx) {
+            setTimeout(function() {
+                var p = document.createElement('div');
+                p.className = 'particle';
+                p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                p.style.left = Math.random() * 100 + '%';
+                p.style.fontSize = (14 + Math.random() * 20) + 'px';
+                p.style.animationDuration = (2 + Math.random() * 2) + 's';
+                p.style.animationDelay = '0s';
+                container.appendChild(p);
+
+                setTimeout(function() { p.remove(); }, 4000);
+            }, idx * 80);
+        })(i);
+    }
+}
+
+// ─── FAKE COUNTDOWN ───
+function startCountdown() {
+    var total = 299; // 4:59
+    var el = document.getElementById('win-countdown');
+
+    var interval = setInterval(function() {
+        total--;
+        if (total <= 0) { clearInterval(interval); return; }
+        var m = Math.floor(total / 60);
+        var s = total % 60;
+        el.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+    }, 1000);
+}
+
+// Close overlay when clicking outside modal
+document.getElementById('win-overlay').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.classList.remove('active');
+        document.getElementById('particles').innerHTML = '';
+    }
+});
+</script>
 
 </body>
 </html>
