@@ -716,7 +716,21 @@ function updateInsights() {
     cards.push({ icon:'🏠', type: rentPct > 8 ? 'warning' : '', title:'Evolução do Aluguel', text });
   }
 
-  // 6. Worst month
+  // 6. % of salary spent on fixed costs
+  if (totInc > 0 && tot > 0) {
+    const danielShare = tot * (dInc / totInc);
+    const marinaShare = tot * (mInc / totInc);
+    const danielPctSal = dInc > 0 ? (danielShare / dInc * 100) : 0;
+    const marinaPctSal = mInc > 0 ? (marinaShare / mInc * 100) : 0;
+    const highLoad = danielPctSal > 30 || marinaPctSal > 30;
+    cards.push({ icon:'💸', type: highLoad ? 'warning' : 'positive',
+      title:'Comprometimento do salário',
+      text:`Daniel: <strong>${fmtBRL(danielShare)}</strong> = <strong>${danielPctSal.toFixed(1)}% do salário</strong> (${fmtBRL(dInc)})<br>
+            Marina: <strong>${fmtBRL(marinaShare)}</strong> = <strong>${marinaPctSal.toFixed(1)}% do salário</strong> (${fmtBRL(mInc)})<br>
+            ${highLoad ? 'Acima de 30% comprometido — acima do recomendado financeiramente.' : 'Abaixo de 30% — dentro da faixa saudável.'}` });
+  }
+
+  // 7. Worst month
   if (maxMonthKey) {
     cards.push({ icon:'🏆', type:'', title:'Mês mais caro no histórico',
       text:`<strong>${fmtKey(maxMonthKey)}</strong> com <strong>${fmtBRL(maxTot)}</strong>. Média mensal: <strong>${fmtBRL(avg)}</strong>.` });
