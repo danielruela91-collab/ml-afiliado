@@ -639,88 +639,93 @@ function updateInsights() {
   const mInc = d.marinaIncome || 0;
   const totInc = dInc + mInc;
 
+  const prevD = prevKey ? get(prevKey) : null;
+  const prevGas = prevD ? (prevD.gas || 0) : 0;
+  const prevLuz = prevD ? (prevD.luz || 0) : 0;
+  const prevAluguel = prevD ? (prevD.aluguel || 0) : 0;
+
+  function vsLine(val, prev, avg) {
+    const lines = [];
+    if (prev > 0 && val > 0) {
+      const d = val - prev, p = Math.abs(d / prev * 100);
+      lines.push(`${d > 0 ? '⬆' : '⬇'} <strong>${d > 0 ? '+' : '-'}${p.toFixed(0)}%</strong> vs mês anterior (<strong>${fmtBRL(prev)}</strong>)`);
+    }
+    if (avg > 0 && val > 0) {
+      const d = val - avg, p = Math.abs(d / avg * 100);
+      lines.push(`${d > 0 ? '⬆' : '⬇'} <strong>${d > 0 ? '+' : '-'}${p.toFixed(0)}%</strong> vs média histórica (<strong>${fmtBRL(avg)}</strong>)`);
+    }
+    return lines.join('<br>');
+  }
+
   const cards = [];
 
-  // 1. vs average
+  // 1. Total — vs avg + vs prev month combined
   if (tot > 0 && avg > 0) {
-    const diff = tot - avg;
-    const pct = Math.abs(diff / avg * 100);
-    if (diff > 50) {
-      cards.push({ icon:'📈', type:'warning', title:'Acima da média histórica',
-        text:`Este mês está <strong>${pct.toFixed(0)}% acima</strong> da média de <strong>${fmtBRL(avg)}</strong>. Total: <strong>${fmtBRL(tot)}</strong>.` });
-    } else if (diff < -50) {
-      cards.push({ icon:'✅', type:'positive', title:'Abaixo da média histórica',
-        text:`Este mês está <strong>${pct.toFixed(0)}% abaixo</strong> da média de <strong>${fmtBRL(avg)}</strong>. Mês tranquilo para as finanças!` });
-    } else {
-      cards.push({ icon:'📊', type:'', title:'Dentro da média',
-        text:`Total de <strong>${fmtBRL(tot)}</strong> está dentro da média histórica de <strong>${fmtBRL(avg)}</strong>. Variação de apenas <strong>${pct.toFixed(0)}%</strong>.` });
+    const diffAvg = tot - avg, pctAvg = diffAvg / avg * 100;
+    let text = `Total: <strong>${fmtBRL(tot)}</strong><br>`;
+    text += `${diffAvg > 0 ? '⬆' : '⬇'} <strong>${diffAvg > 0 ? '+' : ''}${pctAvg.toFixed(0)}%</strong> vs média histórica (<strong>${fmtBRL(avg)}</strong>)`;
+    if (prevKey && prevTot > 0) {
+      const diffPrev = tot - prevTot, pctPrev = diffPrev / prevTot * 100;
+      text += `<br>${diffPrev > 0 ? '⬆' : '⬇'} <strong>${diffPrev > 0 ? '+' : ''}${pctPrev.toFixed(0)}%</strong> vs ${fmtKey(prevKey).split(' ')[0]} (<strong>${fmtBRL(prevTot)}</strong>)`;
     }
+    const type = pctAvg > 5 ? 'warning' : pctAvg < -5 ? 'positive' : '';
+    cards.push({ icon: pctAvg > 0 ? '📈' : '✅', type, title: pctAvg > 5 ? 'Acima da média histórica' : pctAvg < -5 ? 'Abaixo da média histórica' : 'Dentro da média', text });
   }
 
-  // 2. vs previous month
-  if (prevKey && prevTot > 0 && tot > 0) {
-    const diff = tot - prevTot;
-    const pct = Math.abs(diff / prevTot * 100);
-    cards.push({ icon: diff > 0 ? '⬆️' : '⬇️',
-      type: diff > 100 ? 'warning' : diff < -100 ? 'positive' : '',
-      title: `${diff > 0 ? 'Alta' : 'Queda'} em relação a ${fmtKey(prevKey).split(' ')[0]}`,
-      text: `De <strong>${fmtBRL(prevTot)}</strong> para <strong>${fmtBRL(tot)}</strong> — ${diff > 0 ? '+' : ''}${fmtBRL(diff)} (<strong>${diff > 0 ? '+' : '-'}${pct.toFixed(1)}%</strong>).` });
-  }
-
-  // 3. Income split
+  // 2. Income split
   if (totInc > 0) {
     const pD = (dInc / totInc * 100).toFixed(1);
     const pM = (mInc / totInc * 100).toFixed(1);
     cards.push({ icon:'⚖️', type:'highlight', title:'Divisão proporcional',
-      text:`Com renda de <strong>${fmtBRL(dInc)}</strong> (Daniel) e <strong>${fmtBRL(mInc)}</strong> (Marina):<br>
-            Daniel paga <strong>${pD}%</strong> = <strong>${fmtBRL(tot * dInc / totInc)}</strong><br>
-            Marina paga <strong>${pM}%</strong> = <strong>${fmtBRL(tot * mInc / totInc)}</strong>` });
+      text:`Daniel: <strong>${fmtBRL(dInc)}</strong> → paga <strong>${pD}% = ${fmtBRL(tot * dInc / totInc)}</strong><br>
+            Marina: <strong>${fmtBRL(mInc)}</strong> → paga <strong>${pM}% = ${fmtBRL(tot * mInc / totInc)}</strong>` });
   } else {
-    cards.push({ icon:'💡', type:'', title:'Insira as rendas',
-      text:`Digite a renda mensal de cada um para calcular a divisão proporcional. As despesas somam <strong>${fmtBRL(tot)}</strong> este mês.` });
+    cards.push({ icon:'💡', type:'', title:'Insira as rendas para dividir',
+      text:`Digite a renda mensal de cada um para calcular a divisão proporcional. Despesas do mês: <strong>${fmtBRL(tot)}</strong>.` });
   }
 
-  // 4. Aluguel trend
-  if (rentPct !== 0 && firstRent > 0) {
-    cards.push({ icon:'🏠', type: rentPct > 8 ? 'warning' : '',
-      title:'Evolução do Aluguel',
-      text:`O aluguel subiu <strong>${rentPct.toFixed(1)}%</strong> desde ${fmtKey(ks[0]).split(' ')[0]} ${ks[0].split('-')[0]} — de <strong>${fmtBRL(firstRent)}</strong> para <strong>${fmtBRL(lastRent)}</strong>. ${rentPct > 6 ? 'Acima do IPCA anual — vale renegociar.' : 'Crescimento moderado.'}` });
+  // 3. Gás — vs prev + vs avg
+  if (d.gas > 0 && (avgGas > 0 || prevGas > 0)) {
+    const [,m] = key.split('-'); const mo = parseInt(m);
+    const isWinter = mo >= 6 && mo <= 9;
+    const detail = vsLine(d.gas, prevGas, avgGas);
+    cards.push({ icon:'🔥',
+      type: isWinter ? 'warning' : (d.gas > avgGas * 1.1 || d.gas > prevGas * 1.1) ? 'warning' : d.gas < avgGas * 0.9 ? 'positive' : '',
+      title: isWinter ? 'Gás — Pico de Inverno' : `Gás: ${fmtBRL(d.gas)}`,
+      text: detail + (isWinter ? `<br>Pico histórico: <strong>${fmtBRL(maxGas)}</strong> em <strong>${fmtKey(maxGasKey)}</strong>` : '') });
   }
 
-  // 5. Gas seasonality
-  if (avgGas > 0) {
-    const [,m] = key.split('-');
-    const mo = parseInt(m);
-    if (mo >= 6 && mo <= 9) {
-      cards.push({ icon:'🔥', type:'warning', title:'Pico de Gás — Inverno',
-        text:`Gás tende a ser mais caro no inverno. Pico histórico: <strong>${fmtBRL(maxGas)}</strong> em <strong>${fmtKey(maxGasKey)}</strong>. Média anual: <strong>${fmtBRL(avgGas)}</strong>.` });
-    } else if (d.gas > 0 && Math.abs(d.gas - avgGas) > 40) {
-      const above = d.gas > avgGas;
-      cards.push({ icon:'🔥', type: above ? 'warning' : 'positive',
-        title: `Gás ${above ? 'cara' : 'barata'} este mês`,
-        text:`Conta de Gás: <strong>${fmtBRL(d.gas)}</strong> vs média histórica de <strong>${fmtBRL(avgGas)}</strong>. ${above ? `<strong>+${fmtBRL(d.gas-avgGas)} acima</strong> do normal.` : `<strong>${fmtBRL(avgGas-d.gas)} abaixo</strong> do normal.`}` });
+  // 4. Luz — vs prev + vs avg
+  if (d.luz > 0 && (avgLuz > 0 || prevLuz > 0)) {
+    const detail = vsLine(d.luz, prevLuz, avgLuz);
+    cards.push({ icon:'⚡',
+      type: (d.luz > avgLuz * 1.1 || d.luz > prevLuz * 1.1) ? 'warning' : d.luz < avgLuz * 0.9 ? 'positive' : '',
+      title: `Luz: ${fmtBRL(d.luz)}`,
+      text: detail + (d.luz > avgLuz * 1.1 ? '<br>Verifique ar-condicionado e chuveiro elétrico.' : '') });
+  }
+
+  // 5. Aluguel trend + vs prev
+  if (d.aluguel > 0 && firstRent > 0) {
+    let text = '';
+    if (prevAluguel > 0 && prevAluguel !== d.aluguel) {
+      const diff = d.aluguel - prevAluguel, pct = diff / prevAluguel * 100;
+      text += `${diff > 0 ? '⬆' : '⬇'} <strong>${diff > 0 ? '+' : ''}${pct.toFixed(1)}%</strong> vs mês anterior (<strong>${fmtBRL(prevAluguel)}</strong>)<br>`;
     }
+    text += `Desde ${fmtKey(ks[0])}: de <strong>${fmtBRL(firstRent)}</strong> → <strong>${fmtBRL(lastRent)}</strong> (<strong>+${rentPct.toFixed(1)}%</strong>)`;
+    text += rentPct > 6 ? '<br>Acima do IPCA anual — vale renegociar.' : '';
+    cards.push({ icon:'🏠', type: rentPct > 8 ? 'warning' : '', title:'Evolução do Aluguel', text });
   }
 
-  // 6. Luz
-  if (d.luz > 0 && avgLuz > 0 && Math.abs(d.luz - avgLuz) > 40) {
-    const above = d.luz > avgLuz;
-    cards.push({ icon:'⚡', type: above ? 'warning' : 'positive',
-      title: `Luz ${above ? 'alta' : 'baixa'} este mês`,
-      text:`Conta de Luz: <strong>${fmtBRL(d.luz)}</strong> — média histórica é <strong>${fmtBRL(avgLuz)}</strong>. ${above ? `Verifique aparelhos de alto consumo (ar-cond., chuveiro).` : `Abaixo da média, bom mês de consumo.`}` });
-  }
-
-  // 7. Worst month
+  // 6. Worst month
   if (maxMonthKey) {
-    cards.push({ icon:'🏆', type:'', title:'Mês de maior gasto',
-      text:`O mês mais caro no histórico foi <strong>${fmtKey(maxMonthKey)}</strong> com <strong>${fmtBRL(maxTot)}</strong>. A média mensal é <strong>${fmtBRL(avg)}</strong>.` });
+    cards.push({ icon:'🏆', type:'', title:'Mês mais caro no histórico',
+      text:`<strong>${fmtKey(maxMonthKey)}</strong> com <strong>${fmtBRL(maxTot)}</strong>. Média mensal: <strong>${fmtBRL(avg)}</strong>.` });
   }
 
-  // 8. Annual projection
+  // 7. Annual projection
   if (avg > 0) {
-    const annual = avg * 12;
     cards.push({ icon:'📅', type:'', title:'Projeção anual',
-      text:`Pela média histórica, as despesas fixas custam <strong>${fmtBRL(annual)}</strong> por ano — <strong>${fmtBRL(avg)}</strong>/mês em média.` });
+      text:`Pela média histórica: <strong>${fmtBRL(avg * 12)}</strong>/ano — <strong>${fmtBRL(avg)}</strong>/mês.` });
   }
 
   document.getElementById('insights-grid').innerHTML = cards.map(c => `
