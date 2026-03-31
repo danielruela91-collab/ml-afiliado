@@ -89,16 +89,18 @@ def update_html(price: int) -> bool:
     )
 
     # 7. Recalculate competitor % differences
+    # Replace each competitor row's percentage one at a time using a list
+    # of known competitor prices in display order
     known_competitors = [399, 359, 420, 389]
+    offset = 0
+    pattern = re.compile(r'(<div class="compare-status status-high">\+)\d+(%)')
     for comp in known_competitors:
-        if comp > price:
+        m = pattern.search(html, offset)
+        if m and comp > price:
             pct = round((comp / price - 1) * 100)
-            html = re.sub(
-                r'(<div class="compare-status status-high">\+)\d+(%)',
-                rf'\g<1>{pct}\2',
-                html,
-                count=1,
-            )
+            html = html[:m.start()] + m.group(1) + str(pct) + m.group(2) + html[m.end():]
+        if m:
+            offset = m.start() + 1
 
     if html == original:
         print("No changes — price already up to date.")
