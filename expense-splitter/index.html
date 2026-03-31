@@ -589,7 +589,7 @@ const brkChart = new Chart(bCtx, {
 });
 
 function updateCharts() {
-  const ks = keys;
+  const ks = keys.filter(k => total(k) > 0);
   const labels = ks.map(k => {
     const [y, m] = k.split('-');
     return MONTHS_PT[parseInt(m)-1].slice(0,3) + '/' + y.slice(2);
@@ -611,9 +611,9 @@ function updateCharts() {
 function updateInsights() {
   const key = keys[idx];
   const d = get(key);
-  const ks = keys;
+  const ks = keys.filter(k => total(k) > 0);
   const tot = total(key);
-  const allTotals = ks.map(k => total(k)).filter(v => v > 0);
+  const allTotals = ks.map(k => total(k));
   const avg = allTotals.reduce((a,b)=>a+b,0) / allTotals.length;
   const maxTot = Math.max(...allTotals);
   const maxMonthKey = ks[ks.map(k => total(k)).indexOf(maxTot)];
