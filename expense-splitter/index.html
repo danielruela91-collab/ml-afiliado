@@ -653,6 +653,24 @@ function updateInsights() {
 
   const maxGasVal = Math.max(...ks.map(k=>get(k).gas||0));
   const maxGasKey = ks[ks.map(k=>get(k).gas||0).indexOf(maxGasVal)];
+  const minGasVals = ks.map(k=>get(k).gas||0).filter(v=>v>0);
+  const minGasVal = minGasVals.length ? Math.min(...minGasVals) : 0;
+  const minGasKey = ks[ks.map(k=>get(k).gas||0).indexOf(minGasVal)];
+
+  const minLuzVals = ks.map(k=>get(k).luz||0).filter(v=>v>0);
+  const minLuzVal = minLuzVals.length ? Math.min(...minLuzVals) : 0;
+  const minLuzKey = ks[ks.map(k=>get(k).luz||0).indexOf(minLuzVal)];
+  const maxLuzVal = Math.max(...ks.map(k=>get(k).luz||0));
+
+  // same month last year for luz
+  const [curY, curM] = key.split('-');
+  const lastYearKey = `${parseInt(curY)-1}-${curM}`;
+  const luzLastYear = get(lastYearKey).luz || 0;
+
+  // YTD totals (Jan–current month of current year)
+  const ytdKeys = ks.filter(k => k.startsWith(curY) && k <= key);
+  const ytdGas = ytdKeys.reduce((s,k) => s + (get(k).gas||0), 0);
+  const ytdLuz = ytdKeys.reduce((s,k) => s + (get(k).luz||0), 0);
 
   const dInc = d.danielIncome || 0;
   const mInc = d.marinaIncome || 0;
@@ -678,8 +696,13 @@ function updateInsights() {
     aluguelHtml = vsLines(d.aluguel, prevD?.aluguel||0, avgRent);
     if (firstRent > 0) {
       const totalChange = (d.aluguel - firstRent) / firstRent * 100;
-      aluguelHtml += `<br>Desde ${fmtKey(firstRentKey)}: <strong>${firstRent > d.aluguel ? '' : '+'}${totalChange.toFixed(1)}%</strong> (<strong>${fmtBRL(firstRent)}</strong> → <strong>${fmtBRL(d.aluguel)}</strong>)`;
+      aluguelHtml += `<br>Desde ${fmtKey(firstRentKey)}: <strong>${totalChange >= 0 ? '+' : ''}${totalChange.toFixed(1)}%</strong> (<strong>${fmtBRL(firstRent)}</strong> → <strong>${fmtBRL(d.aluguel)}</strong>)`;
       if (totalChange > 6) aluguelHtml += '<br>Acima do IPCA — vale renegociar.';
+    }
+    aluguelHtml += `<br>Projeção anual: <strong>${fmtBRL(d.aluguel * 12)}</strong>`;
+    if (d.aluguel > 0) {
+      const saving = d.aluguel * 0.05 * 12;
+      aluguelHtml += ` · −5% economizaria <strong>${fmtBRL(saving)}/ano</strong>`;
     }
   } else {
     aluguelHtml = 'Sem dado de aluguel para este mês.';
@@ -692,6 +715,8 @@ function updateInsights() {
   if (d.gas > 0) {
     gasHtml = vsLines(d.gas, prevD?.gas||0, avgGas);
     if (isWinter) gasHtml += `<br>Pico histórico: <strong>${fmtBRL(maxGasVal)}</strong> em <strong>${fmtKey(maxGasKey)}</strong>`;
+    if (minGasVal > 0) gasHtml += `<br>Mínimo histórico: <strong>${fmtBRL(minGasVal)}</strong> (${fmtKey(minGasKey)})`;
+    if (ytdGas > 0) gasHtml += `<br>Acumulado ${curY}: <strong>${fmtBRL(ytdGas)}</strong>`;
   } else {
     gasHtml = 'Sem dado de gás para este mês.';
   }
@@ -700,6 +725,12 @@ function updateInsights() {
   let luzHtml = '';
   if (d.luz > 0) {
     luzHtml = vsLines(d.luz, prevD?.luz||0, avgLuz);
+    if (luzLastYear > 0) {
+      const yoy = (d.luz - luzLastYear) / luzLastYear * 100;
+      luzHtml += `<br>${yoy >= 0 ? '⬆' : '⬇'} <strong>${yoy >= 0 ? '+' : ''}${yoy.toFixed(0)}%</strong> vs mesmo mês ${parseInt(curY)-1} (<strong>${fmtBRL(luzLastYear)}</strong>)`;
+    }
+    if (minLuzVal > 0) luzHtml += `<br>Mínimo histórico: <strong>${fmtBRL(minLuzVal)}</strong> (${fmtKey(minLuzKey)})`;
+    if (ytdLuz > 0) luzHtml += `<br>Acumulado ${curY}: <strong>${fmtBRL(ytdLuz)}</strong>`;
     if (d.luz > avgLuz * 1.15) luzHtml += '<br>Verifique ar-condicionado e chuveiro elétrico.';
   } else {
     luzHtml = 'Sem dado de luz para este mês.';
@@ -710,8 +741,11 @@ function updateInsights() {
   if (totInc > 0 && tot > 0) {
     const pct = (tot / totInc * 100);
     const highLoad = pct > 30;
+    const dLeftover = dInc - (tot * dInc / totInc);
+    const mLeftover = mInc - (tot * mInc / totInc);
     salaryHtml = `<strong>${pct.toFixed(1)}% da renda combinada</strong> vai para despesas fixas<br>
-                  Daniel paga <strong>${fmtBRL(tot * dInc / totInc)}</strong> · Marina paga <strong>${fmtBRL(tot * mInc / totInc)}</strong><br>
+                  Daniel paga <strong>${fmtBRL(tot * dInc / totInc)}</strong> · sobram <strong>${fmtBRL(dLeftover)}</strong><br>
+                  Marina paga <strong>${fmtBRL(tot * mInc / totInc)}</strong> · sobram <strong>${fmtBRL(mLeftover)}</strong><br>
                   ${highLoad ? '⚠ Acima de 30% — acima do recomendado.' : '✓ Abaixo de 30% — faixa saudável.'}`;
   } else {
     salaryHtml = 'Insira as rendas de Daniel e Marina para ver o comprometimento salarial.';
