@@ -692,6 +692,29 @@ function updateInsights() {
 
   // ── Card 1: 🏠 Aluguel ──
   let aluguelHtml = '';
+  // extra stats
+  const rentVals = ks.map(k=>get(k).aluguel||0).filter(v=>v>0);
+  const maxRentVal = rentVals.length ? Math.max(...rentVals) : 0;
+  const maxRentKey = ks[ks.map(k=>get(k).aluguel||0).indexOf(maxRentVal)];
+  const minRentVal = rentVals.length ? Math.min(...rentVals) : 0;
+  const minRentKey = ks[ks.map(k=>get(k).aluguel||0).indexOf(minRentVal)];
+
+  const maxLuzKey = ks[ks.map(k=>get(k).luz||0).indexOf(maxLuzVal)];
+
+  // salary history
+  const salaryMonths = ks.filter(k => get(k).danielIncome > 0 || get(k).marinaIncome > 0);
+  const maxDaniel = salaryMonths.length ? Math.max(...salaryMonths.map(k=>get(k).danielIncome||0)) : 0;
+  const minDaniel = salaryMonths.length ? Math.min(...salaryMonths.filter(k=>get(k).danielIncome>0).map(k=>get(k).danielIncome)) : 0;
+  const maxMarina = salaryMonths.length ? Math.max(...salaryMonths.map(k=>get(k).marinaIncome||0)) : 0;
+  const minMarina = salaryMonths.length ? Math.min(...salaryMonths.filter(k=>get(k).marinaIncome>0).map(k=>get(k).marinaIncome)) : 0;
+
+  // total expenses history
+  const totals = ks.map(k=>total(k)).filter(v=>v>0);
+  const maxTotalVal = totals.length ? Math.max(...totals) : 0;
+  const maxTotalKey = ks[ks.map(k=>total(k)).indexOf(maxTotalVal)];
+  const minTotalVal = totals.length ? Math.min(...totals) : 0;
+  const minTotalKey = ks[ks.map(k=>total(k)).indexOf(minTotalVal)];
+
   if (d.aluguel > 0) {
     aluguelHtml = vsLines(d.aluguel, prevD?.aluguel||0, avgRent);
     if (firstRent > 0) {
@@ -699,11 +722,8 @@ function updateInsights() {
       aluguelHtml += `<br>Desde ${fmtKey(firstRentKey)}: <strong>${totalChange >= 0 ? '+' : ''}${totalChange.toFixed(1)}%</strong> (<strong>${fmtBRL(firstRent)}</strong> → <strong>${fmtBRL(d.aluguel)}</strong>)`;
       if (totalChange > 6) aluguelHtml += '<br>Acima do IPCA — vale renegociar.';
     }
-    aluguelHtml += `<br>Projeção anual: <strong>${fmtBRL(d.aluguel * 12)}</strong>`;
-    if (d.aluguel > 0) {
-      const saving = d.aluguel * 0.05 * 12;
-      aluguelHtml += ` · −5% economizaria <strong>${fmtBRL(saving)}/ano</strong>`;
-    }
+    if (maxRentVal > 0) aluguelHtml += `<br>Máximo histórico: <strong>${fmtBRL(maxRentVal)}</strong> (${fmtKey(maxRentKey)}) · Mínimo: <strong>${fmtBRL(minRentVal)}</strong> (${fmtKey(minRentKey)})`;
+    aluguelHtml += `<br>Projeção anual: <strong>${fmtBRL(d.aluguel * 12)}</strong> · −5% economizaria <strong>${fmtBRL(d.aluguel * 0.05 * 12)}/ano</strong>`;
   } else {
     aluguelHtml = 'Sem dado de aluguel para este mês.';
   }
@@ -714,8 +734,8 @@ function updateInsights() {
   let gasHtml = '';
   if (d.gas > 0) {
     gasHtml = vsLines(d.gas, prevD?.gas||0, avgGas);
-    if (isWinter) gasHtml += `<br>Pico histórico: <strong>${fmtBRL(maxGasVal)}</strong> em <strong>${fmtKey(maxGasKey)}</strong>`;
-    if (minGasVal > 0) gasHtml += `<br>Mínimo histórico: <strong>${fmtBRL(minGasVal)}</strong> (${fmtKey(minGasKey)})`;
+    gasHtml += `<br>Máximo histórico: <strong>${fmtBRL(maxGasVal)}</strong> (${fmtKey(maxGasKey)}) · Mínimo: <strong>${fmtBRL(minGasVal)}</strong> (${fmtKey(minGasKey)})`;
+    if (isWinter) gasHtml += `<br>🥶 Período de pico — espere contas mais altas`;
     if (ytdGas > 0) gasHtml += `<br>Acumulado ${curY}: <strong>${fmtBRL(ytdGas)}</strong>`;
   } else {
     gasHtml = 'Sem dado de gás para este mês.';
@@ -729,7 +749,7 @@ function updateInsights() {
       const yoy = (d.luz - luzLastYear) / luzLastYear * 100;
       luzHtml += `<br>${yoy >= 0 ? '⬆' : '⬇'} <strong>${yoy >= 0 ? '+' : ''}${yoy.toFixed(0)}%</strong> vs mesmo mês ${parseInt(curY)-1} (<strong>${fmtBRL(luzLastYear)}</strong>)`;
     }
-    if (minLuzVal > 0) luzHtml += `<br>Mínimo histórico: <strong>${fmtBRL(minLuzVal)}</strong> (${fmtKey(minLuzKey)})`;
+    if (maxLuzVal > 0) luzHtml += `<br>Máximo histórico: <strong>${fmtBRL(maxLuzVal)}</strong> (${fmtKey(maxLuzKey)}) · Mínimo: <strong>${fmtBRL(minLuzVal)}</strong> (${fmtKey(minLuzKey)})`;
     if (ytdLuz > 0) luzHtml += `<br>Acumulado ${curY}: <strong>${fmtBRL(ytdLuz)}</strong>`;
     if (d.luz > avgLuz * 1.15) luzHtml += '<br>Verifique ar-condicionado e chuveiro elétrico.';
   } else {
@@ -747,6 +767,9 @@ function updateInsights() {
                   Daniel paga <strong>${fmtBRL(tot * dInc / totInc)}</strong> · sobram <strong>${fmtBRL(dLeftover)}</strong><br>
                   Marina paga <strong>${fmtBRL(tot * mInc / totInc)}</strong> · sobram <strong>${fmtBRL(mLeftover)}</strong><br>
                   ${highLoad ? '⚠ Acima de 30% — acima do recomendado.' : '✓ Abaixo de 30% — faixa saudável.'}`;
+    if (maxDaniel > 0) salaryHtml += `<br>Daniel — máx: <strong>${fmtBRL(maxDaniel)}</strong> · mín: <strong>${fmtBRL(minDaniel)}</strong>`;
+    if (maxMarina > 0) salaryHtml += `<br>Marina — máx: <strong>${fmtBRL(maxMarina)}</strong> · mín: <strong>${fmtBRL(minMarina)}</strong>`;
+    if (maxTotalVal > 0) salaryHtml += `<br>Mês mais caro: <strong>${fmtBRL(maxTotalVal)}</strong> (${fmtKey(maxTotalKey)}) · mais barato: <strong>${fmtBRL(minTotalVal)}</strong> (${fmtKey(minTotalKey)})`;
   } else {
     salaryHtml = 'Insira as rendas de Daniel e Marina para ver o comprometimento salarial.';
   }
