@@ -402,41 +402,43 @@
 const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
                    'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-// Bills mapped to the month they REFER to (vencimento April = March expense).
-// Rent & Luz shifted back 1 month from due date. Gas already uses "Mês Ref".
+// Mapping rules (all bills: vencimento month - 1 = expense month):
+// - Rent & Luz: vencimento shifted back 1 month
+// - Naturgy gas: "Mês Ref" shifted forward 1 month (they bill in arrears:
+//   "Mês Ref Fev/2026" is paid April 1 = March expense)
+// - Naturgy "Mês Ref Mar/2026" (R$227,06) is a future bill — excluded
 const SEED = {
   "2025-01": { aluguel: 0,       gas: 0,       luz: 421.56 },
   "2025-02": { aluguel: 0,       gas: 0,       luz: 615.62 },
   "2025-03": { aluguel: 3307.37, gas: 0,       luz: 586.80 },
-  "2025-04": { aluguel: 3325.94, gas: 134.03,  luz: 435.14 },
-  "2025-05": { aluguel: 3437.60, gas: 225.54,  luz: 317.99 },
-  "2025-06": { aluguel: 3311.26, gas: 264.89,  luz: 286.99 },
-  "2025-07": { aluguel: 3369.01, gas: 277.87,  luz: 289.72 },
-  "2025-08": { aluguel: 3484.30, gas: 306.89,  luz: 222.33 },
-  "2025-09": { aluguel: 3493.51, gas: 248.97,  luz: 339.95 },
-  "2025-10": { aluguel: 3434.47, gas: 223.29,  luz: 320.50 },
-  "2025-11": { aluguel: 3374.63, gas: 261.73,  luz: 336.93 },
-  "2025-12": { aluguel: 3444.77, gas: 146.17,  luz: 326.15 },
-  "2026-01": { aluguel: 3636.13, gas: 235.90,  luz: 538.13 },
-  "2026-02": { aluguel: 3729.92, gas: 154.92,  luz: 444.46 },
-  "2026-03": { aluguel: 3633.18, gas: 227.06,  luz: 548.83 },
+  "2025-04": { aluguel: 3325.94, gas: 0,       luz: 435.14 },
+  "2025-05": { aluguel: 3437.60, gas: 134.03,  luz: 317.99 },
+  "2025-06": { aluguel: 3311.26, gas: 225.54,  luz: 286.99 },
+  "2025-07": { aluguel: 3369.01, gas: 264.89,  luz: 289.72 },
+  "2025-08": { aluguel: 3484.30, gas: 277.87,  luz: 222.33 },
+  "2025-09": { aluguel: 3493.51, gas: 306.89,  luz: 339.95 },
+  "2025-10": { aluguel: 3434.47, gas: 248.97,  luz: 320.50 },
+  "2025-11": { aluguel: 3374.63, gas: 223.29,  luz: 336.93 },
+  "2025-12": { aluguel: 3444.77, gas: 261.73,  luz: 326.15 },
+  "2026-01": { aluguel: 3636.13, gas: 146.17,  luz: 538.13 },
+  "2026-02": { aluguel: 3729.92, gas: 235.90,  luz: 444.46 },
+  "2026-03": { aluguel: 3633.18, gas: 154.92,  luz: 548.83 },
 };
+const DATA_VERSION = 3;
 
 function loadData() {
   try {
-    const raw = localStorage.getItem('exp-split-v2');
+    const raw = localStorage.getItem('exp-split-v3');
     if (!raw) return buildFresh();
     const stored = JSON.parse(raw);
-    // merge any missing seed months
-    for (const [k, v] of Object.entries(SEED)) {
+    for (const [k, v] of Object.entries(SEED))
       if (!stored[k]) stored[k] = { ...v, danielIncome: 0, marinaIncome: 0 };
-    }
     return stored;
   } catch(e) { return buildFresh(); }
 }
 
 function buildFresh() {
-  const d = {};
+  const d = { _v: DATA_VERSION };
   for (const [k, v] of Object.entries(SEED))
     d[k] = { ...v, danielIncome: 0, marinaIncome: 0 };
   return d;
@@ -444,7 +446,7 @@ function buildFresh() {
 
 let data = loadData();
 
-function save() { localStorage.setItem('exp-split-v2', JSON.stringify(data)); }
+function save() { localStorage.setItem('exp-split-v3', JSON.stringify(data)); }
 
 // Full month range: earliest seed → 18 months from today (allows entering future bills)
 function generateKeys() {
@@ -746,7 +748,7 @@ let saveTimer;
 const syncEl = () => document.getElementById('sync-status');
 
 function save() {
-  localStorage.setItem('exp-split-v2', JSON.stringify(data));
+  localStorage.setItem('exp-split-v3', JSON.stringify(data));
   clearTimeout(saveTimer);
   saveTimer = setTimeout(pushToServer, 1200);
 }
@@ -774,12 +776,16 @@ async function loadFromServer() {
     const res = await fetch('/api/data');
     if (!res.ok) throw new Error();
     const serverData = await res.json();
-    if (serverData && typeof serverData === 'object' && Object.keys(serverData).length > 0) {
+    if (serverData && typeof serverData === 'object' && Object.keys(serverData).length > 0
+        && serverData._v === DATA_VERSION) {
       data = serverData;
-      // ensure all seed months exist
       for (const [k, v] of Object.entries(SEED))
         if (!data[k]) data[k] = { ...v, danielIncome: 0, marinaIncome: 0 };
-      localStorage.setItem('exp-split-v2', JSON.stringify(data));
+      localStorage.setItem('exp-split-v3', JSON.stringify(data));
+    } else if (serverData && serverData._v !== DATA_VERSION) {
+      // stale server data — push fresh seed
+      data = buildFresh();
+      pushToServer();
     }
   } catch(e) {
     // server unavailable — localStorage already loaded, that's fine
