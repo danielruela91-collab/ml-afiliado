@@ -244,21 +244,43 @@
       gap: 12px;
     }
     .insight-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 18px;
+      border-left: 4px solid transparent;
     }
-    .insight-card.highlight { border-color: var(--accent); background: var(--accent-dim); }
-    .insight-card.warning { border-color: var(--orange); background: rgba(249,115,22,.08); }
-    .insight-card.positive { border-color: var(--green); background: rgba(34,197,94,.08); }
-    .insight-card .insight-icon { font-size: 1.4rem; margin-bottom: 7px; }
-    .insight-card h4 { font-size: 0.83rem; font-weight: 700; margin-bottom: 5px; }
-    .insight-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
-    .insight-card p strong { color: var(--text); }
-    .insight-card.highlight p strong { color: var(--accent); }
-    .insight-card.warning p strong { color: var(--orange); }
-    .insight-card.positive p strong { color: var(--green); }
+    /* Per-expense color themes */
+    .insight-card.card-aluguel {
+      background: rgba(59,130,246,.1);
+      border-color: #3b82f6;
+    }
+    .insight-card.card-aluguel strong { color: #60a5fa; }
+    .insight-card.card-gas {
+      background: rgba(249,115,22,.1);
+      border-color: #f97316;
+    }
+    .insight-card.card-gas strong { color: #fb923c; }
+    .insight-card.card-luz {
+      background: rgba(255,230,0,.08);
+      border-color: #FFE600;
+    }
+    .insight-card.card-luz strong { color: #FFE600; }
+    .insight-card.card-salary {
+      background: rgba(139,92,246,.1);
+      border-color: #8b5cf6;
+    }
+    .insight-card.card-salary strong { color: #a78bfa; }
+    .insight-card .insight-icon { font-size: 1.5rem; margin-bottom: 8px; }
+    .insight-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .insight-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+    .sync-status {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: right;
+      margin-bottom: 10px;
+      min-height: 16px;
+    }
+    .sync-status.ok { color: var(--green); }
+    .sync-status.err { color: var(--orange); }
 
     /* Responsive */
     @media (max-width: 640px) {
@@ -370,6 +392,7 @@
     <div class="section-title">Análise & Insights</div>
     <div class="ai-badge">Consultor IA</div>
   </div>
+  <div class="sync-status" id="sync-status"></div>
   <div class="insights-grid" id="insights-grid"></div>
 
 </div>
@@ -614,144 +637,158 @@ function updateInsights() {
   const key = keys[idx];
   const d = get(key);
   const ks = keys.filter(k => total(k) > 0);
-  const tot = total(key);
-  const allTotals = ks.map(k => total(k));
-  const avg = allTotals.reduce((a,b)=>a+b,0) / allTotals.length;
-  const maxTot = Math.max(...allTotals);
-  const maxMonthKey = ks[ks.map(k => total(k)).indexOf(maxTot)];
 
-  const prevKey = idx > 0 ? keys[idx-1] : null;
-  const prevTot = prevKey ? total(prevKey) : 0;
+  const prevKey = idx > 0 ? keys[idx - 1] : null;
+  const prevD = prevKey ? get(prevKey) : null;
 
-  const gasVals = ks.map(k => get(k).gas||0).filter(v=>v>0);
-  const avgGas = gasVals.reduce((a,b)=>a+b,0) / gasVals.length;
-  const maxGas = Math.max(...gasVals);
-  const maxGasKey = ks[ks.map(k=>get(k).gas||0).indexOf(maxGas)];
+  // Averages (exclude months with zero for that category)
+  const avg = (arr) => { const v = arr.filter(x=>x>0); return v.length ? v.reduce((a,b)=>a+b,0)/v.length : 0; };
+  const avgGas  = avg(ks.map(k => get(k).gas||0));
+  const avgLuz  = avg(ks.map(k => get(k).luz||0));
+  // First month that actually has rent data
+  const rentMonths = ks.filter(k => get(k).aluguel > 0);
+  const firstRentKey = rentMonths[0];
+  const firstRent = firstRentKey ? get(firstRentKey).aluguel : 0;
+  const avgRent = avg(ks.map(k => get(k).aluguel||0));
 
-  const luzVals = ks.map(k => get(k).luz||0).filter(v=>v>0);
-  const avgLuz = luzVals.reduce((a,b)=>a+b,0) / luzVals.length;
-
-  const firstRent = get(ks[0]).aluguel || 0;
-  const lastRent = d.aluguel || 0;
-  const rentPct = firstRent > 0 ? (lastRent - firstRent) / firstRent * 100 : 0;
+  const maxGasVal = Math.max(...ks.map(k=>get(k).gas||0));
+  const maxGasKey = ks[ks.map(k=>get(k).gas||0).indexOf(maxGasVal)];
 
   const dInc = d.danielIncome || 0;
   const mInc = d.marinaIncome || 0;
   const totInc = dInc + mInc;
+  const tot = total(key);
 
-  const prevD = prevKey ? get(prevKey) : null;
-  const prevGas = prevD ? (prevD.gas || 0) : 0;
-  const prevLuz = prevD ? (prevD.luz || 0) : 0;
-  const prevAluguel = prevD ? (prevD.aluguel || 0) : 0;
-
-  function vsLine(val, prev, avg) {
+  function vsLines(val, prev, histAvg) {
     const lines = [];
     if (prev > 0 && val > 0) {
-      const d = val - prev, p = Math.abs(d / prev * 100);
-      lines.push(`${d > 0 ? '⬆' : '⬇'} <strong>${d > 0 ? '+' : '-'}${p.toFixed(0)}%</strong> vs mês anterior (<strong>${fmtBRL(prev)}</strong>)`);
+      const diff = val - prev, p = (diff / prev * 100);
+      lines.push(`${diff >= 0 ? '⬆' : '⬇'} <strong>${diff >= 0 ? '+' : ''}${p.toFixed(0)}%</strong> vs mês anterior (<strong>${fmtBRL(prev)}</strong>)`);
     }
-    if (avg > 0 && val > 0) {
-      const d = val - avg, p = Math.abs(d / avg * 100);
-      lines.push(`${d > 0 ? '⬆' : '⬇'} <strong>${d > 0 ? '+' : '-'}${p.toFixed(0)}%</strong> vs média histórica (<strong>${fmtBRL(avg)}</strong>)`);
+    if (histAvg > 0 && val > 0) {
+      const diff = val - histAvg, p = (diff / histAvg * 100);
+      lines.push(`${diff >= 0 ? '⬆' : '⬇'} <strong>${diff >= 0 ? '+' : ''}${p.toFixed(0)}%</strong> vs média histórica (<strong>${fmtBRL(histAvg)}</strong>)`);
     }
     return lines.join('<br>');
   }
 
-  const cards = [];
-
-  // 1. Total — vs avg + vs prev month combined
-  if (tot > 0 && avg > 0) {
-    const diffAvg = tot - avg, pctAvg = diffAvg / avg * 100;
-    let text = `Total: <strong>${fmtBRL(tot)}</strong><br>`;
-    text += `${diffAvg > 0 ? '⬆' : '⬇'} <strong>${diffAvg > 0 ? '+' : ''}${pctAvg.toFixed(0)}%</strong> vs média histórica (<strong>${fmtBRL(avg)}</strong>)`;
-    if (prevKey && prevTot > 0) {
-      const diffPrev = tot - prevTot, pctPrev = diffPrev / prevTot * 100;
-      text += `<br>${diffPrev > 0 ? '⬆' : '⬇'} <strong>${diffPrev > 0 ? '+' : ''}${pctPrev.toFixed(0)}%</strong> vs ${fmtKey(prevKey).split(' ')[0]} (<strong>${fmtBRL(prevTot)}</strong>)`;
+  // ── Card 1: 🏠 Aluguel ──
+  let aluguelHtml = '';
+  if (d.aluguel > 0) {
+    aluguelHtml = vsLines(d.aluguel, prevD?.aluguel||0, avgRent);
+    if (firstRent > 0) {
+      const totalChange = (d.aluguel - firstRent) / firstRent * 100;
+      aluguelHtml += `<br>Desde ${fmtKey(firstRentKey)}: <strong>${firstRent > d.aluguel ? '' : '+'}${totalChange.toFixed(1)}%</strong> (<strong>${fmtBRL(firstRent)}</strong> → <strong>${fmtBRL(d.aluguel)}</strong>)`;
+      if (totalChange > 6) aluguelHtml += '<br>Acima do IPCA — vale renegociar.';
     }
-    const type = pctAvg > 5 ? 'warning' : pctAvg < -5 ? 'positive' : '';
-    cards.push({ icon: pctAvg > 0 ? '📈' : '✅', type, title: pctAvg > 5 ? 'Acima da média histórica' : pctAvg < -5 ? 'Abaixo da média histórica' : 'Dentro da média', text });
-  }
-
-  // 2. Income split
-  if (totInc > 0) {
-    const pD = (dInc / totInc * 100).toFixed(1);
-    const pM = (mInc / totInc * 100).toFixed(1);
-    cards.push({ icon:'⚖️', type:'highlight', title:'Divisão proporcional',
-      text:`Daniel: <strong>${fmtBRL(dInc)}</strong> → paga <strong>${pD}% = ${fmtBRL(tot * dInc / totInc)}</strong><br>
-            Marina: <strong>${fmtBRL(mInc)}</strong> → paga <strong>${pM}% = ${fmtBRL(tot * mInc / totInc)}</strong>` });
   } else {
-    cards.push({ icon:'💡', type:'', title:'Insira as rendas para dividir',
-      text:`Digite a renda mensal de cada um para calcular a divisão proporcional. Despesas do mês: <strong>${fmtBRL(tot)}</strong>.` });
+    aluguelHtml = 'Sem dado de aluguel para este mês.';
   }
 
-  // 3. Gás — vs prev + vs avg
-  if (d.gas > 0 && (avgGas > 0 || prevGas > 0)) {
-    const [,m] = key.split('-'); const mo = parseInt(m);
-    const isWinter = mo >= 6 && mo <= 9;
-    const detail = vsLine(d.gas, prevGas, avgGas);
-    cards.push({ icon:'🔥',
-      type: isWinter ? 'warning' : (d.gas > avgGas * 1.1 || d.gas > prevGas * 1.1) ? 'warning' : d.gas < avgGas * 0.9 ? 'positive' : '',
-      title: isWinter ? 'Gás — Pico de Inverno' : `Gás: ${fmtBRL(d.gas)}`,
-      text: detail + (isWinter ? `<br>Pico histórico: <strong>${fmtBRL(maxGas)}</strong> em <strong>${fmtKey(maxGasKey)}</strong>` : '') });
+  // ── Card 2: 🔥 Gás ──
+  const [,mo] = key.split('-');
+  const isWinter = parseInt(mo) >= 6 && parseInt(mo) <= 9;
+  let gasHtml = '';
+  if (d.gas > 0) {
+    gasHtml = vsLines(d.gas, prevD?.gas||0, avgGas);
+    if (isWinter) gasHtml += `<br>Pico histórico: <strong>${fmtBRL(maxGasVal)}</strong> em <strong>${fmtKey(maxGasKey)}</strong>`;
+  } else {
+    gasHtml = 'Sem dado de gás para este mês.';
   }
 
-  // 4. Luz — vs prev + vs avg
-  if (d.luz > 0 && (avgLuz > 0 || prevLuz > 0)) {
-    const detail = vsLine(d.luz, prevLuz, avgLuz);
-    cards.push({ icon:'⚡',
-      type: (d.luz > avgLuz * 1.1 || d.luz > prevLuz * 1.1) ? 'warning' : d.luz < avgLuz * 0.9 ? 'positive' : '',
-      title: `Luz: ${fmtBRL(d.luz)}`,
-      text: detail + (d.luz > avgLuz * 1.1 ? '<br>Verifique ar-condicionado e chuveiro elétrico.' : '') });
+  // ── Card 3: ⚡ Luz ──
+  let luzHtml = '';
+  if (d.luz > 0) {
+    luzHtml = vsLines(d.luz, prevD?.luz||0, avgLuz);
+    if (d.luz > avgLuz * 1.15) luzHtml += '<br>Verifique ar-condicionado e chuveiro elétrico.';
+  } else {
+    luzHtml = 'Sem dado de luz para este mês.';
   }
 
-  // 5. Aluguel trend + vs prev
-  if (d.aluguel > 0 && firstRent > 0) {
-    let text = '';
-    if (prevAluguel > 0 && prevAluguel !== d.aluguel) {
-      const diff = d.aluguel - prevAluguel, pct = diff / prevAluguel * 100;
-      text += `${diff > 0 ? '⬆' : '⬇'} <strong>${diff > 0 ? '+' : ''}${pct.toFixed(1)}%</strong> vs mês anterior (<strong>${fmtBRL(prevAluguel)}</strong>)<br>`;
-    }
-    text += `Desde ${fmtKey(ks[0])}: de <strong>${fmtBRL(firstRent)}</strong> → <strong>${fmtBRL(lastRent)}</strong> (<strong>+${rentPct.toFixed(1)}%</strong>)`;
-    text += rentPct > 6 ? '<br>Acima do IPCA anual — vale renegociar.' : '';
-    cards.push({ icon:'🏠', type: rentPct > 8 ? 'warning' : '', title:'Evolução do Aluguel', text });
-  }
-
-  // 6. % of salary spent on fixed costs
+  // ── Card 4: 💸 Salary commitment ──
+  let salaryHtml = '';
   if (totInc > 0 && tot > 0) {
-    const danielShare = tot * (dInc / totInc);
-    const marinaShare = tot * (mInc / totInc);
-    const danielPctSal = dInc > 0 ? (danielShare / dInc * 100) : 0;
-    const marinaPctSal = mInc > 0 ? (marinaShare / mInc * 100) : 0;
-    const highLoad = danielPctSal > 30 || marinaPctSal > 30;
-    cards.push({ icon:'💸', type: highLoad ? 'warning' : 'positive',
-      title:'Comprometimento do salário',
-      text:`Daniel: <strong>${fmtBRL(danielShare)}</strong> = <strong>${danielPctSal.toFixed(1)}% do salário</strong> (${fmtBRL(dInc)})<br>
-            Marina: <strong>${fmtBRL(marinaShare)}</strong> = <strong>${marinaPctSal.toFixed(1)}% do salário</strong> (${fmtBRL(mInc)})<br>
-            ${highLoad ? 'Acima de 30% comprometido — acima do recomendado financeiramente.' : 'Abaixo de 30% — dentro da faixa saudável.'}` });
+    const dShare = tot * (dInc / totInc), mShare = tot * (mInc / totInc);
+    const dPct = (dShare / dInc * 100), mPct = (mShare / mInc * 100);
+    const highLoad = dPct > 30 || mPct > 30;
+    salaryHtml = `Daniel: <strong>${fmtBRL(dShare)}</strong> = <strong>${dPct.toFixed(1)}% do salário</strong><br>
+                  Marina: <strong>${fmtBRL(mShare)}</strong> = <strong>${mPct.toFixed(1)}% do salário</strong><br>
+                  ${highLoad ? '⚠ Acima de 30% — acima do recomendado.' : '✓ Abaixo de 30% — faixa saudável.'}`;
+  } else {
+    salaryHtml = 'Insira as rendas de Daniel e Marina para ver o comprometimento salarial.';
   }
 
-  // 7. Worst month
-  if (maxMonthKey) {
-    cards.push({ icon:'🏆', type:'', title:'Mês mais caro no histórico',
-      text:`<strong>${fmtKey(maxMonthKey)}</strong> com <strong>${fmtBRL(maxTot)}</strong>. Média mensal: <strong>${fmtBRL(avg)}</strong>.` });
-  }
+  document.getElementById('insights-grid').innerHTML = `
+    <div class="insight-card card-aluguel">
+      <div class="insight-icon">🏠</div>
+      <h4>Aluguel — ${fmtBRL(d.aluguel||0)}</h4>
+      <p>${aluguelHtml}</p>
+    </div>
+    <div class="insight-card card-gas">
+      <div class="insight-icon">🔥</div>
+      <h4>Gás — ${fmtBRL(d.gas||0)}${isWinter ? ' 🥶' : ''}</h4>
+      <p>${gasHtml}</p>
+    </div>
+    <div class="insight-card card-luz">
+      <div class="insight-icon">⚡</div>
+      <h4>Luz — ${fmtBRL(d.luz||0)}</h4>
+      <p>${luzHtml}</p>
+    </div>
+    <div class="insight-card card-salary">
+      <div class="insight-icon">💸</div>
+      <h4>Comprometimento do Salário</h4>
+      <p>${salaryHtml}</p>
+    </div>`;
+}
 
-  // 7. Annual projection
-  if (avg > 0) {
-    cards.push({ icon:'📅', type:'', title:'Projeção anual',
-      text:`Pela média histórica: <strong>${fmtBRL(avg * 12)}</strong>/ano — <strong>${fmtBRL(avg)}</strong>/mês.` });
-  }
+// ── SERVER SYNC ──────────────────────────────────────────────────────────────
+let saveTimer;
+const syncEl = () => document.getElementById('sync-status');
 
-  document.getElementById('insights-grid').innerHTML = cards.map(c => `
-    <div class="insight-card ${c.type}">
-      <div class="insight-icon">${c.icon}</div>
-      <h4>${c.title}</h4>
-      <p>${c.text}</p>
-    </div>`).join('');
+function save() {
+  localStorage.setItem('exp-split-v2', JSON.stringify(data));
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(pushToServer, 1200);
+}
+
+async function pushToServer() {
+  try {
+    syncEl().textContent = 'Salvando…';
+    syncEl().className = 'sync-status';
+    await fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    syncEl().textContent = '✓ Salvo e sincronizado';
+    syncEl().className = 'sync-status ok';
+    setTimeout(() => { syncEl().textContent = ''; }, 3000);
+  } catch(e) {
+    syncEl().textContent = '⚠ Salvo localmente (sem conexão com servidor)';
+    syncEl().className = 'sync-status err';
+  }
+}
+
+async function loadFromServer() {
+  try {
+    const res = await fetch('/api/data');
+    if (!res.ok) throw new Error();
+    const serverData = await res.json();
+    if (serverData && typeof serverData === 'object' && Object.keys(serverData).length > 0) {
+      data = serverData;
+      // ensure all seed months exist
+      for (const [k, v] of Object.entries(SEED))
+        if (!data[k]) data[k] = { ...v, danielIncome: 0, marinaIncome: 0 };
+      localStorage.setItem('exp-split-v2', JSON.stringify(data));
+    }
+  } catch(e) {
+    // server unavailable — localStorage already loaded, that's fine
+  }
+  render();
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
-render();
+loadFromServer();
 </script>
 </body>
 </html>
