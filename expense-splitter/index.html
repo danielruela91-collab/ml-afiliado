@@ -708,11 +708,10 @@ function updateInsights() {
   // ── Card 4: 💸 Salary commitment ──
   let salaryHtml = '';
   if (totInc > 0 && tot > 0) {
-    const dShare = tot * (dInc / totInc), mShare = tot * (mInc / totInc);
-    const dPct = (dShare / dInc * 100), mPct = (mShare / mInc * 100);
-    const highLoad = dPct > 30 || mPct > 30;
-    salaryHtml = `Daniel: <strong>${fmtBRL(dShare)}</strong> = <strong>${dPct.toFixed(1)}% do salário</strong><br>
-                  Marina: <strong>${fmtBRL(mShare)}</strong> = <strong>${mPct.toFixed(1)}% do salário</strong><br>
+    const pct = (tot / totInc * 100);
+    const highLoad = pct > 30;
+    salaryHtml = `<strong>${pct.toFixed(1)}% da renda combinada</strong> vai para despesas fixas<br>
+                  Daniel paga <strong>${fmtBRL(tot * dInc / totInc)}</strong> · Marina paga <strong>${fmtBRL(tot * mInc / totInc)}</strong><br>
                   ${highLoad ? '⚠ Acima de 30% — acima do recomendado.' : '✓ Abaixo de 30% — faixa saudável.'}`;
   } else {
     salaryHtml = 'Insira as rendas de Daniel e Marina para ver o comprometimento salarial.';
